@@ -1,7 +1,7 @@
 
 
-use avian3d::prelude::{Collider, CollidingEntities, CollisionLayers, Gravity, GravityScale, LinearVelocity, RayCaster, RayHits, RigidBody};
-use bevy::{math::VectorSpace, prelude::*};
+use avian3d::prelude::{Collider, CollidingEntities, CollisionLayers, GravityScale, LinearVelocity, RigidBody};
+use bevy::prelude::*;
 
 use crate::{physics::GamePhysicsLayer, stage::components::Ground};
 
@@ -89,12 +89,12 @@ pub fn check_grounded(
 }
 
 pub fn jump_balls(
-    mut query: Query<(&mut LinearVelocity, &PlayerController), (With<Player>, With<Grounded>)>,
+    mut query: Query<(&mut LinearVelocity, &JumpController), (With<Player>, With<Grounded>)>,
     input: Res<ButtonInput<KeyCode>>,
 ) {
-    for (mut linvel, player_con) in &mut query {
-        if input.pressed(player_con.jump_key) {
-            linvel.y = player_con.jump_force;
+    for (mut linvel, jump_con) in &mut query {
+        if input.pressed(jump_con.jump_key) {
+            linvel.y = jump_con.jump_force;
         }
     }
 }
