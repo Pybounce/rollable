@@ -5,7 +5,7 @@ mod stage;
 use avian3d::{prelude::Gravity, PhysicsPlugins};
 use bevy::prelude::*;
 use camera::*;
-use player::systems::spawn_player;
+use player::systems::*;
 use stage::systems::spawn_temp_stage;
 
 fn main() {
@@ -14,7 +14,7 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_plugins(PhysicsPlugins::default())
         .add_systems(Startup, (spawn_camera, spawn_player, spawn_temp_stage))
-        .add_systems(Update, (move_camera))
+        .add_systems(Update, (move_camera, move_balls, apply_ball_friction))
         .insert_resource(Gravity(Vec3::NEG_Y * 10.0))
         .run();
 }

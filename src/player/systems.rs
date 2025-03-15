@@ -1,7 +1,7 @@
 
 
 use avian3d::prelude::{Collider, Gravity, GravityScale, LinearVelocity, RigidBody};
-use bevy::prelude::*;
+use bevy::{math::VectorSpace, prelude::*};
 
 use super::components::*;
 
@@ -21,7 +21,52 @@ pub fn spawn_player(
         Collider::sphere(0.5),
         RigidBody::Dynamic,
         GravityScale(1.0),
-        LinearVelocity::default()
+        LinearVelocity::default(),
+        PlayerController::default()
     ));
     
 }
+
+pub fn move_balls(
+    mut player_query: Query<(&mut LinearVelocity, &PlayerController, &Transform), With<Player>>,
+    camera_query: Query<&Transform, (With<Camera3d>, Without<Player>)>,
+    input: Res<ButtonInput<KeyCode>>,
+    time: Res<Time>
+) {
+    let camera_transform = camera_query.single();
+    
+    for (mut linvel, player_controller, player_transform) in &mut player_query {
+        let dir = (player_transform.translation - camera_transform.translation).xz().extend(0.0).xzy().normalize_or_zero();
+        let perpen_dir = Vec3::new(dir.z, 0.0, -dir.x);
+
+         if input.pressed(player_controller.forwards_key) {
+            linvel.0 += dir * player_controller.force * time.delta_secs();
+        }
+
+        if input.pressed(player_controller.backwards_key) {
+            linvel.0 -= dir * player_controller.force * time.delta_secs();
+        }
+        
+        if input.pressed(player_controller.right_key) {
+            linvel.0 -= perpen_dir * player_controller.force * time.delta_secs();
+        }
+
+        if input.pressed(player_controller.left_key) {
+            linvel.0 += perpen_dir * player_controller.force * time.delta_secs();
+            
+        }   
+    }
+}
+
+pub fn apply_ball_friction(
+    mut player_query: Query<(&mut LinearVelocity, &PlayerController), With<Player>>,
+    time: Res<Time>
+) {
+    for (mut linvel, player_controller) in &mut player_query {
+        let force = linvel.0 * linvel.0 * player_controller.friction_c;
+        let dir = linvel.0.normalize_or_zero();
+        linvel.0 -= dir * force * time.delta_secs();
+    }
+}
+
+

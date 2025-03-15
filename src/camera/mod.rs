@@ -8,7 +8,7 @@ pub fn spawn_camera(
 ) {
     commands.spawn((
         Camera3d::default(),
-        Transform::from_translation(Vec3::new(0.0, 0.0, 20.0))
+        Transform::from_translation(Vec3::new(0.0, 10.0, 10.0))
     ));
 }
 
@@ -28,7 +28,7 @@ pub fn move_camera(
             let dir = (pt.translation - ct.translation).normalize_or_zero();
 
             let delta = time.delta_secs() * speed * dir;
-            ct.translation += delta;
+            //ct.translation += delta;
             ct.look_at(pt.translation, Vec3::Y);
         }
         Err(_) => (),
