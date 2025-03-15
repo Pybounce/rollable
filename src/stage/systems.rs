@@ -1,7 +1,11 @@
 
 
-use avian3d::prelude::{Collider, RigidBody};
+use avian3d::prelude::{Collider, CollisionLayers, RigidBody};
 use bevy::prelude::*;
+
+use crate::physics::GamePhysicsLayer;
+
+use super::components::Ground;
 
 
 pub fn spawn_temp_stage(
@@ -18,6 +22,8 @@ pub fn spawn_temp_stage(
         Collider::cuboid(50.0, 1.0, 50.0),
         RigidBody::Static,
         Transform::from_translation(Vec3::new(0.0, 0.0, 0.0)),
+        CollisionLayers::new(GamePhysicsLayer::Ground, [GamePhysicsLayer::Ball]),
+        Ground
     ));
 
 }

@@ -1,7 +1,9 @@
 
 
-use avian3d::prelude::{Collider, Gravity, GravityScale, LinearVelocity, RigidBody};
+use avian3d::prelude::{Collider, CollidingEntities, CollisionLayers, Gravity, GravityScale, LinearVelocity, RayCaster, RayHits, RigidBody};
 use bevy::{math::VectorSpace, prelude::*};
+
+use crate::{physics::GamePhysicsLayer, stage::components::Ground};
 
 use super::components::*;
 
@@ -20,9 +22,11 @@ pub fn spawn_player(
         Transform::from_translation(Vec3::new(0.0, 2.0, 0.0)),
         Collider::sphere(0.5),
         RigidBody::Dynamic,
-        GravityScale(1.0),
+        GravityScale(2.5),
         LinearVelocity::default(),
-        PlayerController::default()
+        PlayerController::default(),
+        CollisionLayers::new(GamePhysicsLayer::Ball, [GamePhysicsLayer::Ground]),
+        CollidingEntities::default()
     ));
     
 }
@@ -69,4 +73,29 @@ pub fn apply_ball_friction(
     }
 }
 
+pub fn check_grounded(
+    query: Query<(Entity, &CollidingEntities), With<Player>>,
+    ground_query: Query<(), With<Ground>>,
+    mut commands: Commands
+) {
+    for (player_entity, colliding_entities) in &query {
+        commands.entity(player_entity).remove::<Grounded>();
+        for colliding_entity in colliding_entities.iter() {
+            if ground_query.contains(*colliding_entity) {
+                commands.entity(player_entity).try_insert(Grounded);
+            }
+        }
+    }
+}
+
+pub fn jump_balls(
+    mut query: Query<(&mut LinearVelocity, &PlayerController), (With<Player>, With<Grounded>)>,
+    input: Res<ButtonInput<KeyCode>>,
+) {
+    for (mut linvel, player_con) in &mut query {
+        if input.pressed(player_con.jump_key) {
+            linvel.y = player_con.jump_force;
+        }
+    }
+}
 
