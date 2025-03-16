@@ -32,15 +32,23 @@ pub struct Grounded;
 
 #[derive(Component)]
 pub struct JumpController {
-    pub jump_key: KeyCode,
-    pub jump_force: f32,
+    pub key: KeyCode,
+    pub initial_force: f32,
+    pub max_force: f32,
+    pub current_force: f32,
+    pub force_deceleration: f32,
+    pub timer: Timer
 }
 
 impl Default for JumpController {
     fn default() -> Self {
         Self { 
-            jump_key: KeyCode::Space,
-            jump_force: 20.0
+            key: KeyCode::Space,
+            initial_force: 15.0,
+            max_force: 100.0,
+            current_force: 20.0,
+            force_deceleration: 150.0,
+            timer: Timer::from_seconds(0.5, TimerMode::Once)
         }
     }
 }

@@ -22,9 +22,10 @@ pub fn spawn_player(
         Transform::from_translation(Vec3::new(0.0, 2.0, 0.0)),
         Collider::sphere(0.5),
         RigidBody::Dynamic,
-        GravityScale(2.5),
+        GravityScale(6.0),
         LinearVelocity::default(),
         PlayerController::default(),
+        JumpController::default(),
         CollisionLayers::new(GamePhysicsLayer::Ball, [GamePhysicsLayer::Ground]),
         CollidingEntities::default()
     ));
@@ -88,13 +89,42 @@ pub fn check_grounded(
     }
 }
 
-pub fn jump_balls(
-    mut query: Query<(&mut LinearVelocity, &JumpController), (With<Player>, With<Grounded>)>,
+pub fn start_jumping_balls(
+    mut query: Query<(&mut LinearVelocity, &mut JumpController), (With<Player>, With<Grounded>)>,
     input: Res<ButtonInput<KeyCode>>,
 ) {
-    for (mut linvel, jump_con) in &mut query {
-        if input.pressed(jump_con.jump_key) {
-            linvel.y = jump_con.jump_force;
+    for (mut linvel, mut jump_con) in &mut query {
+        if input.pressed(jump_con.key) {
+            jump_con.current_force = jump_con.max_force;
+            linvel.y = jump_con.initial_force.max(linvel.y);
+            jump_con.timer.reset();
+        }
+    }
+}
+
+pub fn jumping_balls(
+    mut query: Query<(&mut JumpController, &mut LinearVelocity), With<Player>>,
+    time: Res<Time>,
+    input: Res<ButtonInput<KeyCode>>,
+) {
+    for (mut jump_con, mut linvel) in &mut query {
+        jump_con.timer.tick(time.delta());
+        if !jump_con.timer.finished() && input.pressed(jump_con.key) {
+            linvel.y += jump_con.current_force * time.delta_secs();
+            jump_con.current_force -= jump_con.force_deceleration * time.delta_secs();
+            jump_con.current_force = jump_con.current_force.max(0.0);
+        }
+    }
+}
+
+pub fn end_jumping_balls(
+    mut query: Query<&mut JumpController, With<Player>>,
+    input: Res<ButtonInput<KeyCode>>,
+) {
+    for mut jump_con in &mut query {
+        if !input.pressed(jump_con.key) && !jump_con.timer.finished() {
+            let remaining = jump_con.timer.remaining();
+            jump_con.timer.tick(remaining);
         }
     }
 }
