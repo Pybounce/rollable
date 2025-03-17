@@ -3,7 +3,7 @@
 use avian3d::prelude::{Collider, CollidingEntities, CollisionLayers, GravityScale, LinearVelocity, RigidBody};
 use bevy::prelude::*;
 
-use crate::{physics::GamePhysicsLayer, stage::components::Ground};
+use crate::{physics::GamePhysicsLayer, shared::bouncy::components::Bounceable, stage::components::Ground};
 
 use super::components::*;
 
@@ -27,7 +27,8 @@ pub fn spawn_player(
         PlayerController::default(),
         JumpController::default(),
         CollisionLayers::new(GamePhysicsLayer::Ball, [GamePhysicsLayer::Ground]),
-        CollidingEntities::default()
+        CollidingEntities::default(),
+        Bounceable
     ));
     
 }
