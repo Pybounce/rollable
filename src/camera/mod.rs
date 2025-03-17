@@ -17,8 +17,8 @@ impl Default for CameraController {
         Self { 
             min_pitch: -1.0, 
             max_pitch: 0.0, 
-            x_speed: 0.01, 
-            y_speed: 0.01, 
+            x_speed: 0.0015, 
+            y_speed: 0.0015, 
             distance: 20.0
         }
     }
