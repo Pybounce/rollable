@@ -8,7 +8,7 @@ pub struct Bouncy {
 
 impl Default for Bouncy {
     fn default() -> Self {
-        Self { factor: 10.0 }
+        Self { factor: 20.0 }
     }
 }
 

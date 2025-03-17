@@ -44,7 +44,7 @@ pub fn spawn_temp_bouncepad(
         MeshMaterial3d(blue.clone()),
         Collider::cuboid(2.9, 0.5, 2.9),
         RigidBody::Static,
-        Transform::from_translation(Vec3::new(20.0, 0.6, 0.0)),
+        Transform::from_translation(Vec3::new(20.0, 6.5, -5.0)).with_rotation(Quat::from_rotation_x(45.0)),
         CollisionLayers::new(GamePhysicsLayer::Ground, [GamePhysicsLayer::Ball]),
         Bouncy::default()
     ));
@@ -54,30 +54,29 @@ pub fn spawn_temp_bouncepad(
         MeshMaterial3d(pink.clone()),
         Collider::cuboid(3.4, 0.25, 3.4),
         RigidBody::Static,
-        Transform::from_translation(Vec3::new(20.0, 0.6, 0.0)),
+        Transform::from_translation(Vec3::new(20.0, 6.5, -5.0)).with_rotation(Quat::from_rotation_x(45.0)),
         CollisionLayers::new(GamePhysicsLayer::Ground, [GamePhysicsLayer::Ball]),
         Ground
     ));
 
     commands.spawn((
-        Mesh3d(bouncepad_platform),
-        MeshMaterial3d(blue),
+        Mesh3d(bouncepad_platform.clone()),
+        MeshMaterial3d(blue.clone()),
         Collider::cuboid(2.9, 0.5, 2.9),
         RigidBody::Static,
-        Transform::from_translation(Vec3::new(20.0, 0.5, 5.0)),
+        Transform::from_translation(Vec3::new(20.0, 1.5, 5.0)).with_rotation(Quat::from_rotation_x(-45.0)),
         CollisionLayers::new(GamePhysicsLayer::Ground, [GamePhysicsLayer::Ball]),
         Bouncy::default()
     ));
 
     commands.spawn((
-        Mesh3d(bouncepad_frame),
-        MeshMaterial3d(pink),
+        Mesh3d(bouncepad_frame.clone()),
+        MeshMaterial3d(pink.clone()),
         Collider::cuboid(3.4, 0.25, 3.4),
         RigidBody::Static,
-        Transform::from_translation(Vec3::new(20.0, 0.5, 5.0)),
+        Transform::from_translation(Vec3::new(20.0, 1.5, 5.0)).with_rotation(Quat::from_rotation_x(-45.0)),
         CollisionLayers::new(GamePhysicsLayer::Ground, [GamePhysicsLayer::Ball]),
         Ground
     ));
-
 }
 
