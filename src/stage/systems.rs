@@ -14,11 +14,15 @@ pub fn spawn_temp_stage(
     mut materials: ResMut<Assets<StandardMaterial>>
 ) {
     let cuboid_mesh = meshes.add(Cuboid::new(50.0, 1.0, 50.0));
-    let material = materials.add(StandardMaterial::default());
+    let blue = materials.add(StandardMaterial {
+        perceptual_roughness: 1.0,
+        base_color: Color::srgb_u8(161, 213, 255),
+        ..default()
+    });
 
     commands.spawn((
         Mesh3d(cuboid_mesh),
-        MeshMaterial3d(material),
+        MeshMaterial3d(blue),
         Collider::cuboid(50.0, 1.0, 50.0),
         RigidBody::Static,
         Transform::from_translation(Vec3::new(0.0, 0.0, 0.0)),
@@ -35,8 +39,16 @@ pub fn spawn_temp_bouncepad(
 ) {
     let bouncepad_frame: Handle<Mesh> = server.load("bouncepad_frame.glb#Mesh0/Primitive0");
     let bouncepad_platform: Handle<Mesh> = server.load("bouncepad_platform.glb#Mesh0/Primitive0");
-    let pink = materials.add(Color::srgb_u8(246, 161, 255));
-    let blue = materials.add(Color::srgb_u8(161, 213, 255));
+    let pink = materials.add(StandardMaterial {
+        perceptual_roughness: 1.0,
+        base_color: Color::srgb_u8(246, 161, 255),
+        ..default()
+    });
+    let blue = materials.add(StandardMaterial {
+        perceptual_roughness: 1.0,
+        base_color: Color::srgb_u8(161, 213, 255),
+        ..default()
+    });
 
 
     commands.spawn((

@@ -21,8 +21,8 @@ impl Default for PlayerController {
             right_key: KeyCode::KeyD,
             forwards_key: KeyCode::KeyW,
             backwards_key: KeyCode::KeyS,
-            force: 10.0,
-            friction_c: 0.2,
+            force: 15.0,
+            friction_c: 0.1,
         }
     }
 }
