@@ -7,7 +7,7 @@ pub mod shared;
 use std::process::exit;
 
 use avian3d::{math::PI, prelude::{Gravity, PhysicsDebugPlugin}, PhysicsPlugins};
-use bevy::{prelude::*, window::{CursorGrabMode, PrimaryWindow}};
+use bevy::{pbr::CascadeShadowConfigBuilder, prelude::*, window::{CursorGrabMode, PrimaryWindow}};
 use camera::*;
 use player::systems::*;
 use shared::bouncy::systems::*;
@@ -17,7 +17,7 @@ fn main() {
 
     App::new()
         .add_plugins(DefaultPlugins)
-        .add_plugins(PhysicsDebugPlugin::default())
+        //.add_plugins(PhysicsDebugPlugin::default())
         .add_plugins(PhysicsPlugins::default())
         .add_systems(Startup, lock_cursor)
         .add_systems(Update, try_exit_game)
@@ -34,11 +34,16 @@ fn lighting(
 ) {
     commands.spawn((
         DirectionalLight {
-            shadows_enabled: true, 
+            shadows_enabled: true,
+            illuminance: 700.0,
             ..default() 
         },
         Transform::from_rotation(Quat::from_rotation_x(-PI / 4.0))
     ));
+    commands.insert_resource(AmbientLight {
+        color: Color::WHITE,
+        brightness: 2000.0,
+    });
 }
 
 fn lock_cursor(
