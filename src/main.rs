@@ -3,12 +3,14 @@ mod player;
 mod stage;
 pub mod physics;
 pub mod shared;
+pub mod loading;
 
 use std::process::exit;
 
-use avian3d::{math::PI, prelude::{Gravity, PhysicsDebugPlugin}, PhysicsPlugins};
-use bevy::{pbr::CascadeShadowConfigBuilder, prelude::*, window::{CursorGrabMode, PrimaryWindow}};
+use avian3d::{math::PI, prelude::Gravity, PhysicsPlugins};
+use bevy::{prelude::*, window::{CursorGrabMode, PrimaryWindow}};
 use camera::*;
+use loading::systems::load_stage_assets;
 use player::systems::*;
 use shared::bouncy::systems::*;
 use stage::systems::*;
@@ -21,7 +23,7 @@ fn main() {
         .add_plugins(PhysicsPlugins::default())
         .add_systems(Startup, lock_cursor)
         .add_systems(Update, try_exit_game)
-        .add_systems(Startup, (spawn_camera, spawn_player, spawn_temp_stage, lighting, spawn_temp_bouncepad))
+        .add_systems(Startup, (load_stage_assets, (spawn_camera, spawn_player, spawn_temp_stage, lighting)).chain())
         .add_systems(Update, (move_camera, move_balls, apply_ball_friction, start_jumping_balls, jumping_balls, end_jumping_balls, check_grounded))
         .add_systems(Update, bounce)
         .insert_resource(Gravity(Vec3::NEG_Y * 10.0))
