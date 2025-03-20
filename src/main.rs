@@ -9,7 +9,7 @@ use std::process::exit;
 
 use avian3d::{math::PI, prelude::{Gravity, PhysicsDebugPlugin}, PhysicsPlugins};
 use bevy::{prelude::*, window::{CursorGrabMode, PrimaryWindow}};
-use camera::*;
+use camera::{post_processing::PostProcessPlugin, *};
 use loading::systems::load_stage_assets;
 use player::systems::*;
 use shared::bouncy::systems::*;
@@ -19,6 +19,7 @@ fn main() {
 
     App::new()
         .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()))
+        .add_plugins(PostProcessPlugin)
         //.add_plugins(PhysicsDebugPlugin::default())
         .add_plugins(PhysicsPlugins::default())
         .insert_resource(ClearColor(Color::srgb(0.7, 0.85, 0.95)))

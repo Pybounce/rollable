@@ -1,7 +1,10 @@
 
 use bevy::{input::mouse::MouseMotion, prelude::*};
+use post_processing::PostProcessSettings;
 
 use crate::player::components::Player;
+
+pub mod post_processing;
 
 #[derive(Component)]
 pub struct CameraController {
@@ -30,7 +33,11 @@ pub fn spawn_camera(
     commands.spawn((
         Camera3d::default(),
         Transform::from_translation(Vec3::new(0.0, 10.0, 10.0)),
-        CameraController::default()
+        CameraController::default(),
+        PostProcessSettings {
+            intensity: 0.02,
+            ..default()
+        }
     ));
 }
 
