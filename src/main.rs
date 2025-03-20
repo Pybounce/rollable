@@ -7,7 +7,7 @@ pub mod loading;
 
 use std::process::exit;
 
-use avian3d::{math::PI, prelude::Gravity, PhysicsPlugins};
+use avian3d::{math::PI, prelude::{Gravity, PhysicsDebugPlugin}, PhysicsPlugins};
 use bevy::{prelude::*, window::{CursorGrabMode, PrimaryWindow}};
 use camera::*;
 use loading::systems::load_stage_assets;
@@ -37,7 +37,7 @@ fn lighting(
     commands.spawn((
         DirectionalLight {
             shadows_enabled: true,
-            illuminance: 700.0,
+            illuminance: 1000.0,
             ..default() 
         },
         Transform::from_rotation(Quat::from_rotation_x(-PI / 4.0))

@@ -36,7 +36,7 @@ pub fn build_bounce_pad<'c>(
             Transform::from_translation(pos).with_rotation(Quat::from_rotation_x(-45.0)),
             CollisionLayers::new(GamePhysicsLayer::Ground, [GamePhysicsLayer::Ball]),
             Ground
-        ));;
+        ));
     });
 
     return entity_commands;
@@ -55,6 +55,26 @@ pub fn build_floor_large<'c>(
         Mesh3d(mesh),
         MeshMaterial3d(mat.clone()),
         Collider::cuboid(40.0, 20.0, 40.0),
+        RigidBody::Static,
+        Transform::from_translation(pos - Vec3::new(0.0, 10.0, 0.0)),
+        CollisionLayers::new(GamePhysicsLayer::Ground, [GamePhysicsLayer::Ball]),
+        Ground
+    ));
+}
+
+pub fn build_pillar_m<'c>(
+    commands: &'c mut Commands, 
+    server: & Res<AssetServer>, 
+    shared_assets: & SharedAssets, 
+    pos: Vec3) -> EntityCommands<'c> {
+
+    let mesh: Handle<Mesh> = server.load("pillar_m.glb#Mesh0/Primitive0");
+    let mat = shared_assets.base_material.clone();
+
+    return commands.spawn((
+        Mesh3d(mesh),
+        MeshMaterial3d(mat.clone()),
+        Collider::cylinder(1.5, 20.0),
         RigidBody::Static,
         Transform::from_translation(pos - Vec3::new(0.0, 10.0, 0.0)),
         CollisionLayers::new(GamePhysicsLayer::Ground, [GamePhysicsLayer::Ball]),
