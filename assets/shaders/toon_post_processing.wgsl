@@ -94,7 +94,7 @@ fn fragment(in: FullscreenVertexOutput) -> @location(0) vec4<f32> {
 
     let view_space_dir = (view.view_from_clip * vec4f(in.position.xy, 0.0, 1.0)).xyz;
 
-    let _scale = 2.0;
+    let _scale = 3.0;
     let texel_size = texel_size();
 
     let half_scale_floor = floor(_scale * 0.5);
