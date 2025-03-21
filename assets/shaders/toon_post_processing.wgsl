@@ -75,6 +75,24 @@ fn normal_buffer_edge_depth(bl_uv: vec2f, tr_uv: vec2f, br_uv: vec2f, tl_uv: vec
     return edge_normal;
 }
 
+fn detect_edge_colour(bl_uv: vec2f, tr_uv: vec2f, br_uv: vec2f, tl_uv: vec2f) -> f32 {
+    let _colour_threshold = 0.3;
+
+    let c0 = textureSample(screen_texture, texture_sampler, bl_uv).rgb;
+    let c1 = textureSample(screen_texture, texture_sampler, tr_uv).rgb;
+    let c2 = textureSample(screen_texture, texture_sampler, br_uv).rgb;
+    let c3 = textureSample(screen_texture, texture_sampler, tl_uv).rgb;
+
+    let finite_diff_0 = c1 - c0;
+    let finite_diff_1 = c3 - c2;
+
+    var edge = sqrt(dot(finite_diff_0, finite_diff_0) + dot(finite_diff_1, finite_diff_1));
+    if edge > _colour_threshold { edge = 1.0; }
+    else { edge = 0.0; }
+
+    return edge;
+}
+
 
 fn toon_colour(uv: vec2f) -> vec4f {
     let c = textureSample(screen_texture, texture_sampler, uv).rgb;
@@ -94,7 +112,7 @@ fn fragment(in: FullscreenVertexOutput) -> @location(0) vec4<f32> {
 
     let view_space_dir = (view.view_from_clip * vec4f(in.position.xy, 0.0, 1.0)).xyz;
 
-    let _scale = 3.0;
+    let _scale = 2.0;
     let texel_size = texel_size();
 
     let half_scale_floor = floor(_scale * 0.5);
@@ -120,7 +138,8 @@ fn fragment(in: FullscreenVertexOutput) -> @location(0) vec4<f32> {
 
     let edge_depth_0 = depth_buffer_edge_depth(normal_threshold, bl_uv, tr_uv, br_uv, tl_uv);
     let edge_depth_1 = normal_buffer_edge_depth(bl_uv, tr_uv, br_uv, tl_uv);
-    let edge_depth = max(edge_depth_0, edge_depth_1);
+    let colour_depth = detect_edge_colour(bl_uv, tr_uv, br_uv, tl_uv);
+    let edge_depth = max(colour_depth, max(edge_depth_0, edge_depth_1));
     
 
     var c = toon_colour(in.uv);
