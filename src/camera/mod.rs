@@ -32,6 +32,11 @@ pub fn spawn_camera(
 ) {
     commands.spawn((
         Camera3d::default(),
+        PerspectiveProjection {
+            //near: 2.0,
+            //far: 10000.0,
+            ..default()
+        },
         Transform::from_translation(Vec3::new(0.0, 10.0, 10.0)),
         CameraController::default(),
         PostProcessSettings {
