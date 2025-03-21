@@ -69,6 +69,21 @@ fn normal_buffer_edge_depth(bl_uv: vec2f, tr_uv: vec2f, br_uv: vec2f, tl_uv: vec
     return edge_normal;
 }
 
+
+fn toon_colour(uv: vec2f) -> vec4f {
+    let c = textureSample(screen_texture, texture_sampler, uv).rgb;
+    let i = length(c);
+    let new_i = floor(i * 15.0) / 15.0;
+    let new_c = normalize(c) * new_i;
+    // Sample each color channel with an arbitrary shift
+    return vec4<f32>(
+        new_c.r,
+        new_c.g,
+        new_c.b,
+        1.0
+    );
+}
+
 @fragment
 fn fragment(in: FullscreenVertexOutput) -> @location(0) vec4<f32> {
     
@@ -87,22 +102,12 @@ fn fragment(in: FullscreenVertexOutput) -> @location(0) vec4<f32> {
     let edge_depth_1 = normal_buffer_edge_depth(bl_uv, tr_uv, br_uv, tl_uv);
     let edge_depth = max(edge_depth_0, edge_depth_1);
     
-    return vec4(edge_depth, edge_depth, edge_depth, 1.0);
-    //return vec4(depth0, depth0, depth0, 1.0);
 
-    //let d = prepass_normal(in.position.xy);
-    //return vec4(d.r, d.g, d.b, 1.0);
+    var c = toon_colour(in.uv);
 
-    //let offset_strength = settings.intensity;
-    //let c = textureSample(screen_texture, texture_sampler, in.uv).rgb;
-    //let i = length(c);
-    //let new_i = floor(i * 15.0) / 15.0;
-    //let new_c = normalize(c) * new_i;
-    //// Sample each color channel with an arbitrary shift
-    //return vec4<f32>(
-    //    new_c.r,
-    //    new_c.g,
-    //    new_c.b,
-    //    1.0
-    //);
+    if edge_depth > 0.5 {
+        c = vec4(edge_depth, edge_depth, edge_depth, 1.0);
+    }
+
+    return c;
 }
