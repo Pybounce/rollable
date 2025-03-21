@@ -5,6 +5,9 @@
     prepass_utils,
     forward_io::VertexOutput,
 }
+#import bevy_render::view::View
+
+
 @group(0) @binding(0) var screen_texture: texture_2d<f32>;
 @group(0) @binding(1) var texture_sampler: sampler;
 struct PostProcessSettings {
@@ -13,6 +16,7 @@ struct PostProcessSettings {
 @group(0) @binding(2) var<uniform> settings: PostProcessSettings;
 @group(0) @binding(3) var depth_prepass_texture: texture_depth_2d;
 @group(0) @binding(4) var normal_prepass_texture: texture_2d<f32>;
+@group(0) @binding(5) var<uniform> view: View;
 
 fn prepass_depth(frag_coord: vec2f) -> f32 {
     return textureLoad(depth_prepass_texture, vec2i(frag_coord), 0);
@@ -75,7 +79,6 @@ fn toon_colour(uv: vec2f) -> vec4f {
     let i = length(c);
     let new_i = floor(i * 15.0) / 15.0;
     let new_c = normalize(c) * new_i;
-    // Sample each color channel with an arbitrary shift
     return vec4<f32>(
         new_c.r,
         new_c.g,
@@ -87,7 +90,7 @@ fn toon_colour(uv: vec2f) -> vec4f {
 @fragment
 fn fragment(in: FullscreenVertexOutput) -> @location(0) vec4<f32> {
     
-    let _scale = 1.0;
+    let _scale = 2.0;
     let texel_size = texel_size();
 
     let half_scale_floor = floor(_scale * 0.5);

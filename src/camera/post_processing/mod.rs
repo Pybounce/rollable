@@ -18,7 +18,7 @@ use bevy::{
             *,
         },
         renderer::{RenderContext, RenderDevice},
-        view::ViewTarget,
+        view::{ViewTarget, ViewUniform, ViewUniformOffset, ViewUniforms},
         RenderApp,
     },
 };
@@ -116,7 +116,7 @@ impl ViewNode for PostProcessNode {
         // As there could be multiple post processing components sent to the GPU (one per camera),
         // we need to get the index of the one that is associated with the current view.
         &'static DynamicUniformIndex<PostProcessSettings>,
-        
+        &'static ViewUniformOffset,
     );
 
     // Runs the node logic
@@ -130,7 +130,7 @@ impl ViewNode for PostProcessNode {
         &self,
         _graph: &mut RenderGraphContext,
         render_context: &mut RenderContext,
-        (view_target, prepass_textures, _post_process_settings, settings_index): QueryItem<Self::ViewQuery>,
+        (view_target, prepass_textures, _post_process_settings, settings_index, view_uniform): QueryItem<Self::ViewQuery>,
         world: &World,
     ) -> Result<(), NodeRunError> {
         // Get the pipeline resource that contains the global data we need
@@ -150,6 +150,10 @@ impl ViewNode for PostProcessNode {
 
         // Get the settings uniform binding
         let settings_uniforms = world.resource::<ComponentUniforms<PostProcessSettings>>();
+        let view_uniforms = world.resource::<ViewUniforms>();
+        let Some(view_uniforms_binding) = view_uniforms.uniforms.binding() else {
+            return Ok(());
+        };
         let Some(settings_binding) = settings_uniforms.uniforms().binding() else {
             return Ok(());
         };
@@ -188,6 +192,7 @@ impl ViewNode for PostProcessNode {
                 settings_binding.clone(),
                 &depth_texture.texture.default_view,
                 &normal_texture.texture.default_view,
+                view_uniforms_binding.clone()
             )),
         );
 
@@ -212,7 +217,7 @@ impl ViewNode for PostProcessNode {
         // By passing in the index of the post process settings on this view, we ensure
         // that in the event that multiple settings were sent to the GPU (as would be the
         // case with multiple cameras), we use the correct one.
-        render_pass.set_bind_group(0, &bind_group, &[settings_index.index()]);
+        render_pass.set_bind_group(0, &bind_group, &[settings_index.index(), view_uniform.offset]);
         render_pass.draw(0..3, 0..1);
 
         Ok(())
@@ -246,6 +251,7 @@ impl FromWorld for PostProcessPipeline {
                     uniform_buffer::<PostProcessSettings>(true),
                     texture_depth_2d(),
                     texture_2d(TextureSampleType::Float { filterable: true }),
+                    uniform_buffer::<ViewUniform>(true),
                 ),
             ),
         );
