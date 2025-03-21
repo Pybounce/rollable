@@ -1,7 +1,7 @@
 use bevy::{
     core_pipeline::{
         core_3d::graph::{Core3d, Node3d},
-        fullscreen_vertex_shader::fullscreen_shader_vertex_state,
+        fullscreen_vertex_shader::fullscreen_shader_vertex_state, prepass::ViewPrepassTextures,
     },
     ecs::query::QueryItem,
     prelude::*,
@@ -14,7 +14,7 @@ use bevy::{
             NodeRunError, RenderGraphApp, RenderGraphContext, RenderLabel, ViewNode, ViewNodeRunner,
         },
         render_resource::{
-            binding_types::{sampler, texture_2d, uniform_buffer},
+            binding_types::{sampler, texture_2d, texture_depth_2d, uniform_buffer},
             *,
         },
         renderer::{RenderContext, RenderDevice},
@@ -110,11 +110,13 @@ impl ViewNode for PostProcessNode {
     // This query will only run on the view entity
     type ViewQuery = (
         &'static ViewTarget,
+        &'static ViewPrepassTextures,
         // This makes sure the node only runs on cameras with the PostProcessSettings component
         &'static PostProcessSettings,
         // As there could be multiple post processing components sent to the GPU (one per camera),
         // we need to get the index of the one that is associated with the current view.
         &'static DynamicUniformIndex<PostProcessSettings>,
+        
     );
 
     // Runs the node logic
@@ -128,7 +130,7 @@ impl ViewNode for PostProcessNode {
         &self,
         _graph: &mut RenderGraphContext,
         render_context: &mut RenderContext,
-        (view_target, _post_process_settings, settings_index): QueryItem<Self::ViewQuery>,
+        (view_target, prepass_textures, _post_process_settings, settings_index): QueryItem<Self::ViewQuery>,
         world: &World,
     ) -> Result<(), NodeRunError> {
         // Get the pipeline resource that contains the global data we need
@@ -151,7 +153,12 @@ impl ViewNode for PostProcessNode {
         let Some(settings_binding) = settings_uniforms.uniforms().binding() else {
             return Ok(());
         };
-
+        let (Some(depth_texture), Some(normal_texture)) =
+            (&prepass_textures.depth, &prepass_textures.normal)
+        else {
+            println!("could not find depth or normal");
+            return Ok(());
+        };
         // This will start a new "post process write", obtaining two texture
         // views from the view target - a `source` and a `destination`.
         // `source` is the "current" main texture and you _must_ write into
@@ -179,6 +186,8 @@ impl ViewNode for PostProcessNode {
                 &post_process_pipeline.sampler,
                 // Set the settings binding
                 settings_binding.clone(),
+                &depth_texture.texture.default_view,
+                &normal_texture.texture.default_view,
             )),
         );
 
@@ -235,6 +244,8 @@ impl FromWorld for PostProcessPipeline {
                     sampler(SamplerBindingType::Filtering),
                     // The settings uniform that will control the effect
                     uniform_buffer::<PostProcessSettings>(true),
+                    texture_depth_2d(),
+                    texture_2d(TextureSampleType::Float { filterable: true }),
                 ),
             ),
         );
