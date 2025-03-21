@@ -71,6 +71,3 @@ pub fn move_camera(
         Err(_) => (),
     }
 }
-
-
-

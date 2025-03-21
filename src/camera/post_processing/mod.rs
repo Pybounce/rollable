@@ -151,7 +151,7 @@ impl ViewNode for PostProcessNode {
         // Get the settings uniform binding
         let settings_uniforms = world.resource::<ComponentUniforms<PostProcessSettings>>();
         let view_uniforms = world.resource::<ViewUniforms>();
-        let Some(view_uniforms_binding) = view_uniforms.uniforms.binding() else {
+        let Some(view_uniforms) = view_uniforms.uniforms.binding() else {
             return Ok(());
         };
         let Some(settings_binding) = settings_uniforms.uniforms().binding() else {
@@ -192,7 +192,7 @@ impl ViewNode for PostProcessNode {
                 settings_binding.clone(),
                 &depth_texture.texture.default_view,
                 &normal_texture.texture.default_view,
-                view_uniforms_binding.clone()
+                view_uniforms
             )),
         );
 
