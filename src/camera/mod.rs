@@ -45,7 +45,7 @@ pub fn spawn_camera(
         },
         DepthPrepass,
         NormalPrepass,
-        Msaa::Off
+        Msaa::Off,
     ));
 }
 
