@@ -1,5 +1,5 @@
 
-use bevy::{core_pipeline::prepass::{DepthPrepass, NormalPrepass}, input::mouse::MouseMotion, prelude::*};
+use bevy::{core_pipeline::{fxaa::Fxaa, prepass::{DepthPrepass, NormalPrepass}}, input::mouse::MouseMotion, prelude::*};
 use post_processing::PostProcessSettings;
 
 use crate::player::components::Player;
@@ -46,6 +46,7 @@ pub fn spawn_camera(
         DepthPrepass,
         NormalPrepass,
         Msaa::Off,
+        Fxaa::default()
     ));
 }
 
