@@ -1,5 +1,5 @@
 
-use avian3d::prelude::{Collider, CollisionLayers, RigidBody};
+use avian3d::prelude::{Collider, CollisionLayers, GravityScale, LinearVelocity, RigidBody};
 use bevy::prelude::*;
 
 use crate::{loading::components::SharedAssets, physics::GamePhysicsLayer, shared::{bouncy::components::Bouncy, mover::components::OffsetMover}};
@@ -75,9 +75,10 @@ pub fn build_pillar_m<'c>(
         Mesh3d(mesh),
         MeshMaterial3d(mat.clone()),
         Collider::cylinder(1.5, 20.0),
-        RigidBody::Static,
+        RigidBody::Kinematic,
         Transform::from_translation(pos - Vec3::new(0.0, 10.0, 0.0)),
         CollisionLayers::new(GamePhysicsLayer::Ground, [GamePhysicsLayer::Ball]),
-        Ground
+        Ground,
+        LinearVelocity::default(),
     ));
 }

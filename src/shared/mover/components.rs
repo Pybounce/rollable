@@ -5,6 +5,7 @@ use bevy::prelude::*;
 pub struct OffsetMover {
     positions: Vec<Vec3>,
     current_position: Vec3,
+    current_vel: Vec3,
     current_offset_index: usize,
     cycle_mode: OffsetMoverCycleMode,
     speed: f32
@@ -30,7 +31,8 @@ impl OffsetMover {
             current_offset_index: 0,
             current_position: Vec3::new(0.0, 0.0, 0.0),
             cycle_mode: OffsetMoverCycleMode::None,
-            speed: 5.0
+            speed: 5.0,
+            current_vel: Vec3::new(0.0, 0.0, 0.0)
         };
     }
 
@@ -65,10 +67,21 @@ impl OffsetMover {
             if dist_remaining < 0.01 {
                 self.next_offset();
             }
+            self.calc_new_velocity();
         }
     }
     pub fn current_offset(&self) -> Vec3 {
         return self.current_position;
+    }
+
+    pub fn current_velocity(&self) -> Vec3 {
+        return self.current_vel;
+    }
+
+    fn calc_new_velocity(&mut self) {
+        let target = self.positions[self.current_offset_index];
+        let dir = (target - self.current_position).normalize();
+        self.current_vel = dir * self.speed;
     }
 
     fn next_offset(&mut self) {
