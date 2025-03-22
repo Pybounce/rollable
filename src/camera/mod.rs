@@ -1,7 +1,10 @@
 
-use bevy::{input::mouse::MouseMotion, prelude::*};
+use bevy::{core_pipeline::{experimental::taa::TemporalAntiAliasing, fxaa::Fxaa, prepass::{DepthPrepass, NormalPrepass}}, input::mouse::MouseMotion, prelude::*};
+use post_processing::PostProcessSettings;
 
 use crate::player::components::Player;
+
+pub mod post_processing;
 
 #[derive(Component)]
 pub struct CameraController {
@@ -29,8 +32,21 @@ pub fn spawn_camera(
 ) {
     commands.spawn((
         Camera3d::default(),
+        PerspectiveProjection {
+            //near: 2.0,
+            //far: 10000.0,
+            ..default()
+        },
         Transform::from_translation(Vec3::new(0.0, 10.0, 10.0)),
-        CameraController::default()
+        CameraController::default(),
+        PostProcessSettings {
+            intensity: 0.02,
+            ..default()
+        },
+        DepthPrepass,
+        NormalPrepass,
+        Msaa::Off,
+        //TemporalAntiAliasing::default()
     ));
 }
 
@@ -56,6 +72,3 @@ pub fn move_camera(
         Err(_) => (),
     }
 }
-
-
-
