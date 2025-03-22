@@ -19,7 +19,7 @@ fn main() {
 
     App::new()
         .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()))
-        //.add_plugins(PostProcessPlugin)
+        .add_plugins(PostProcessPlugin)
         //.add_plugins(PhysicsDebugPlugin::default())
         .add_plugins(PhysicsPlugins::default())
         .insert_resource(ClearColor(Color::srgb(0.7, 0.85, 0.95)))

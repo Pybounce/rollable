@@ -37,8 +37,8 @@ pub fn spawn_temp_stage(
     build_pillar_m(&mut commands, &server, &shared_assets, Vec3::new(30.0, 0.0, 0.0)).try_insert(OffsetMover::bobbing_offset(10.0));
     build_pillar_m(&mut commands, &server, &shared_assets, Vec3::new(40.0, 10.0, 10.0)).try_insert(OffsetMover::bobbing_offset(-10.0));
     build_pillar_m(&mut commands, &server, &shared_assets, Vec3::new(50.0, 0.0, 0.0)).try_insert(OffsetMover::bobbing_offset(10.0));
-    build_pillar_m(&mut commands, &server, &shared_assets, Vec3::new(24.0, 0.0, -10.0)).try_insert(OffsetMover::from_offsets(vec![Vec3::new(10.0, 0.0, 0.0), Vec3::new(-10.0, 0.0, 0.0)]));
     build_floor_large(&mut commands, &server, &shared_assets, Vec3::new(57.0, 0.0, 0.0));
+    build_floor_s(&mut commands, &server, &shared_assets, Vec3::new(24.0, 0.0, -10.0)).try_insert(OffsetMover::from_offsets(vec![Vec3::new(10.0, 0.0, 0.0), Vec3::new(-10.0, 0.0, 0.0)]));
 
 }
 
