@@ -1,5 +1,5 @@
 
-use bevy::prelude::*;
+use bevy::{prelude::*};
 
 #[derive(Component)]
 pub struct OffsetMover {
@@ -52,7 +52,8 @@ impl OffsetMover {
 
 impl OffsetMover {
     pub fn progress(&mut self, time_passed: f32) {
-        let mut distance_to_move = time_passed * self.speed;
+        self.calc_new_velocity();
+        let mut distance_to_move = time_passed * self.current_vel.length();
         while distance_to_move > 0.0 {
             let target = self.positions[self.current_offset_index];
             let dist_to_target = self.current_position.distance(target);
@@ -80,8 +81,23 @@ impl OffsetMover {
 
     fn calc_new_velocity(&mut self) {
         let target = self.positions[self.current_offset_index];
-        let dir = (target - self.current_position).normalize();
+        let dir = (target - self.current_position).normalize_or_zero();
         self.current_vel = dir * self.speed;
+
+        let slowdown_range = 4.0;   // distance from target that it starts to slowdown.
+        if self.min_dist_from_end_target() < slowdown_range {
+            let slowdown_speed = self.speed / 3.0;   
+            self.current_vel = (dir * slowdown_speed).lerp(dir * self.speed, self.min_dist_from_end_target() / slowdown_range);
+        }
+    }
+
+    /// The smallest distance from either the first or last target
+    fn min_dist_from_end_target(&self) -> f32 {
+        //TODO: Currently if the distance between the final offset and second to last one is smaller than the slowdown range, it will act strange and not be smooth
+        //slow down if first/last offset
+        let front_dist = self.current_position.distance(self.positions[0]);
+        let back_dist = self.current_position.distance(self.positions[self.positions.len() - 1]);
+        return front_dist.min(back_dist);
     }
 
     fn next_offset(&mut self) {
