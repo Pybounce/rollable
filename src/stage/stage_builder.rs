@@ -2,7 +2,7 @@
 use avian3d::prelude::{Collider, CollisionLayers, RigidBody};
 use bevy::prelude::*;
 
-use crate::{loading::components::SharedAssets, physics::GamePhysicsLayer, shared::bouncy::components::Bouncy};
+use crate::{loading::components::SharedAssets, physics::GamePhysicsLayer, shared::{bouncy::components::Bouncy, mover::components::OffsetMover}};
 
 use super::components::Ground;
 

@@ -12,7 +12,7 @@ use bevy::{prelude::*, window::{CursorGrabMode, PrimaryWindow}};
 use camera::{post_processing::PostProcessPlugin, *};
 use loading::systems::load_stage_assets;
 use player::systems::*;
-use shared::bouncy::systems::*;
+use shared::{bouncy::systems::*, mover::systems::move_offset_movers};
 use stage::systems::*;
 
 fn main() {
@@ -26,7 +26,7 @@ fn main() {
         .add_systems(Update, (try_exit_game, toggle_cursor_lock))
         .add_systems(Startup, (load_stage_assets, (spawn_camera, spawn_player, spawn_temp_stage, lighting)).chain())
         .add_systems(Update, (move_camera, move_balls, apply_ball_friction, start_jumping_balls, jumping_balls, end_jumping_balls, check_grounded))
-        .add_systems(Update, bounce)
+        .add_systems(Update, (bounce, move_offset_movers))
         .insert_resource(Gravity(Vec3::NEG_Y * 10.0))
         .run();
 }
