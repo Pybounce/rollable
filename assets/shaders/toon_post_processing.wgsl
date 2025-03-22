@@ -37,7 +37,7 @@ fn uv_to_pos(uv: vec2f) -> vec2f {
 
 fn depth_buffer_edge_depth(normal_threshold: f32, bl_uv: vec2f, tr_uv: vec2f, br_uv: vec2f, tl_uv: vec2f) -> f32 {
     
-    let _edge_depth_threshold = 4.0;
+    let _edge_depth_threshold = 3.0;
     
     let depth0 = prepass_depth(uv_to_pos(bl_uv));
     let depth1 = prepass_depth(uv_to_pos(tr_uv));
@@ -47,7 +47,7 @@ fn depth_buffer_edge_depth(normal_threshold: f32, bl_uv: vec2f, tr_uv: vec2f, br
     let depth_finite_diff_0 = depth1 - depth0;
     let depth_finite_diff_1 = depth3 - depth2;
 
-    let depth_threshold = _edge_depth_threshold * depth0 * (normal_threshold * 5.0);
+    let depth_threshold = _edge_depth_threshold * (depth0 * 0.7) * (normal_threshold * 3.0);
 
     var edge_depth = sqrt(pow(depth_finite_diff_0, 2.0) + pow(depth_finite_diff_1, 2.0)) * 100.0;
 

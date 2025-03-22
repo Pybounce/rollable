@@ -35,7 +35,7 @@ pub fn spawn_temp_stage(
     build_floor_large(&mut commands, &server, &shared_assets, Vec3::ZERO);
     build_floor_large(&mut commands, &server, &shared_assets, Vec3::new(30.0, -11.0, 0.0));
     build_pillar_m(&mut commands, &server, &shared_assets, Vec3::new(30.0, 0.0, 0.0)).try_insert(OffsetMover::bobbing_offset(10.0));
-    build_pillar_m(&mut commands, &server, &shared_assets, Vec3::new(40.0, 0.0, 10.0)).try_insert(OffsetMover::bobbing_offset(10.0));
+    build_pillar_m(&mut commands, &server, &shared_assets, Vec3::new(40.0, 10.0, 10.0)).try_insert(OffsetMover::bobbing_offset(-10.0));
     build_pillar_m(&mut commands, &server, &shared_assets, Vec3::new(50.0, 0.0, 0.0)).try_insert(OffsetMover::bobbing_offset(10.0));
 
 }
