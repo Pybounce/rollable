@@ -103,3 +103,53 @@ pub fn build_floor_s<'c>(
         LinearVelocity::default(),
     ));
 }
+
+pub fn build_tree_m<'c>(
+    commands: &'c mut Commands, 
+    server: & Res<AssetServer>, 
+    shared_assets: & SharedAssets, 
+    pos: Vec3) -> EntityCommands<'c> {
+
+    let mesh: Handle<Mesh> = server.load("tree_01.glb#Mesh0/Primitive0");
+    let mat = shared_assets.base_material.clone();
+
+    commands.spawn((
+        Mesh3d(mesh),
+        MeshMaterial3d(mat.clone()),
+        Collider::cylinder(1.5, 20.0),
+        RigidBody::Kinematic,
+        Transform::from_translation(pos),
+        CollisionLayers::new(GamePhysicsLayer::Ground, [GamePhysicsLayer::Ball]),
+        Ground,
+        LinearVelocity::default(),
+    ));
+    let mut entity_commands = commands.spawn((GlobalTransform::default(), Transform::default()));
+
+    entity_commands.with_children(|p| {
+        p.spawn((
+            Collider::cuboid(2.9, 0.5, 2.9),
+            RigidBody::Kinematic,
+            Transform::from_translation(pos).with_rotation(Quat::from_rotation_x(-45.0)),
+            CollisionLayers::new(GamePhysicsLayer::Ground, [GamePhysicsLayer::Ball]),
+        ));
+        p.spawn((
+            Collider::cuboid(2.9, 0.5, 2.9),
+            RigidBody::Kinematic,
+            Transform::from_translation(pos).with_rotation(Quat::from_rotation_x(-45.0)),
+            CollisionLayers::new(GamePhysicsLayer::Ground, [GamePhysicsLayer::Ball]),
+        ));
+    });
+
+    return entity_commands;
+}
+
+pub fn build_tree_m_patch(
+    commands: &mut Commands, 
+    server: & Res<AssetServer>, 
+    shared_assets: & SharedAssets, 
+    pos: Vec3) {
+
+        build_tree_m(commands, server, shared_assets, pos + Vec3::new(0.0, 0.0, 6.0));
+        build_tree_m(commands, server, shared_assets, pos + Vec3::new(6.0, -2.0, 0.0));
+        build_tree_m(commands, server, shared_assets, pos + Vec3::new(-6.0, 0.0, 0.0));
+}
