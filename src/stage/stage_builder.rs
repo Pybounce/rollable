@@ -1,5 +1,5 @@
 
-use avian3d::prelude::{Collider, CollisionLayers, GravityScale, LinearVelocity, RigidBody};
+use avian3d::prelude::{Collider, CollisionLayers, Friction, GravityScale, LinearVelocity, RigidBody};
 use bevy::prelude::*;
 
 use crate::{loading::components::SharedAssets, physics::GamePhysicsLayer, shared::{bouncy::components::Bouncy, mover::components::OffsetMover}};

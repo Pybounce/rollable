@@ -1,7 +1,9 @@
 
+use avian3d::prelude::{LinearVelocity, RigidBody};
 use bevy::{prelude::*};
 
 #[derive(Component)]
+#[require(LinearVelocity, RigidBody)]
 pub struct OffsetMover {
     positions: Vec<Vec3>,
     current_position: Vec3,
@@ -44,8 +46,9 @@ impl OffsetMover {
     pub fn with_cycle_mode(&mut self, cycle_mode: OffsetMoverCycleMode) {
         self.cycle_mode = cycle_mode;
     }
-    pub fn with_speed(&mut self, speed: f32) {
+    pub fn with_speed(&mut self, speed: f32) -> &mut OffsetMover {
         self.speed = speed;
+        return self;
     }
 
 }
