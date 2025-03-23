@@ -40,6 +40,7 @@ pub fn spawn_temp_stage(
     build_floor(&mut commands, &server, &shared_assets, Vec3::new(53.0, 0.0, -6.0), Vec3::new(3.0, 0.5, 3.0)).try_insert(OffsetMover::from_offsets(vec![Vec3::new(-15.0, 0.0, 0.0), Vec3::new(15.0, 0.0, 0.0)]));
     build_tree_m(&mut commands, &server, &shared_assets, Vec3::ZERO);
     build_tree_m_patch(&mut commands, &server, &shared_assets, Vec3::new(77.0, 0.0, 0.0));
+    build_rock(&mut commands, &server, &shared_assets, Vec3::new(5.0, 0.0, 5.0), Vec3::ONE);
 
 }
 
