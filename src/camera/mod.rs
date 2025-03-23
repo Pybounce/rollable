@@ -1,5 +1,5 @@
 
-use bevy::{core_pipeline::{experimental::taa::TemporalAntiAliasing, fxaa::Fxaa, prepass::{DepthPrepass, NormalPrepass}}, input::mouse::MouseMotion, prelude::*};
+use bevy::{core_pipeline::{experimental::taa::TemporalAntiAliasing, fxaa::Fxaa, prepass::{DepthPrepass, NormalPrepass}}, input::mouse::{MouseMotion, MouseWheel}, prelude::*};
 use post_processing::PostProcessSettings;
 
 use crate::player::components::Player;
@@ -12,7 +12,8 @@ pub struct CameraController {
     pub max_pitch: f32,
     pub x_speed: f32,
     pub y_speed: f32,
-    pub distance: f32
+    pub distance: f32,
+    pub zoom_speed: f32
 }
 
 impl Default for CameraController {
@@ -22,7 +23,8 @@ impl Default for CameraController {
             max_pitch: 0.0, 
             x_speed: 0.0015, 
             y_speed: 0.0015, 
-            distance: 20.0
+            distance: 20.0,
+            zoom_speed: 2.0
         }
     }
 }
@@ -70,5 +72,17 @@ pub fn move_camera(
             ct.translation = pt.translation - ct.forward() * cam_con.distance;
         }
         Err(_) => (),
+    }
+}
+
+pub fn zoom_camera(
+    mut mouse_wheel_events: EventReader<MouseWheel>,
+    mut camera_query: Query<&mut CameraController, With<Camera>>,
+) {
+    for mouse_wheel_event in mouse_wheel_events.read() {
+        for mut cam_con in &mut camera_query {
+
+            cam_con.distance -= mouse_wheel_event.y * cam_con.zoom_speed;
+        }
     }
 }
