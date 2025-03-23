@@ -37,7 +37,7 @@ fn uv_to_pos(uv: vec2f) -> vec2f {
 
 fn depth_buffer_edge_depth(normal_threshold: f32, bl_uv: vec2f, tr_uv: vec2f, br_uv: vec2f, tl_uv: vec2f) -> f32 {
     
-    let _edge_depth_threshold = 3.0;
+    let _edge_depth_threshold = 6.0;
     
     let depth0 = prepass_depth(uv_to_pos(bl_uv));
     let depth1 = prepass_depth(uv_to_pos(tr_uv));
@@ -47,7 +47,7 @@ fn depth_buffer_edge_depth(normal_threshold: f32, bl_uv: vec2f, tr_uv: vec2f, br
     let depth_finite_diff_0 = depth1 - depth0;
     let depth_finite_diff_1 = depth3 - depth2;
 
-    let depth_threshold = _edge_depth_threshold * (depth0 * 0.7) * (normal_threshold * 3.0);
+    let depth_threshold = _edge_depth_threshold * (depth0 * 0.2) * (normal_threshold * 10.0);
 
     var edge_depth = sqrt(pow(depth_finite_diff_0, 2.0) + pow(depth_finite_diff_1, 2.0)) * 100.0;
 
@@ -107,12 +107,20 @@ fn toon_colour(uv: vec2f) -> vec4f {
     );
 }
 
+fn get_sampling_scale(pos: vec2f) -> f32 {
+    let depth = 1.0 - prepass_depth(pos);
+    //if depth > 0.999 { return 1.0; }
+    //if depth > 0.998 { return 2.0; }
+    return mix(3.0, 3.0, depth);
+    //return 0.1;
+}
+
 @fragment
 fn fragment(in: FullscreenVertexOutput) -> @location(0) vec4<f32> {
 
     let view_space_dir = (view.view_from_clip * vec4f(in.position.xy, 0.0, 1.0)).xyz;
 
-    let _scale = 3.0;
+    let _scale = get_sampling_scale(in.position.xy);
     let texel_size = texel_size();
 
     let half_scale_floor = floor(_scale * 0.5);

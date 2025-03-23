@@ -23,7 +23,7 @@ impl Default for CameraController {
             max_pitch: 0.0, 
             x_speed: 0.0015, 
             y_speed: 0.0015, 
-            distance: 20.0,
+            distance: 30.0,
             zoom_speed: 2.0
         }
     }
