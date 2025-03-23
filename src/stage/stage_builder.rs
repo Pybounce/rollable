@@ -83,26 +83,47 @@ pub fn build_pillar_m<'c>(
     ));
 }
 
-pub fn build_floor_s<'c>(
-    commands: &'c mut Commands, 
-    server: & Res<AssetServer>, 
-    shared_assets: & SharedAssets, 
-    pos: Vec3) -> EntityCommands<'c> {
+    pub fn build_floor<'c>(
+        commands: &'c mut Commands, 
+        server: & Res<AssetServer>, 
+        shared_assets: & SharedAssets, 
+        pos: Vec3,
+        scale: Vec3) -> EntityCommands<'c> {
 
-    let mesh: Handle<Mesh> = server.load("floor_s.glb#Mesh0/Primitive0");
-    let mat = shared_assets.base_material.clone();
+        let base_mesh: Handle<Mesh> = server.load("floor_rect_base.glb#Mesh0/Primitive0");
+        let top_mesh: Handle<Mesh> = server.load("floor_rect_top.glb#Mesh0/Primitive0");
+        let mat = shared_assets.base_material.clone();
 
-    return commands.spawn((
-        Mesh3d(mesh),
-        MeshMaterial3d(mat.clone()),
-        Collider::cuboid(3.75, 1.35, 3.75),
-        RigidBody::Kinematic,
-        Transform::from_translation(pos - Vec3::new(0.0, 0.0, 0.0)),
-        CollisionLayers::new(GamePhysicsLayer::Ground, [GamePhysicsLayer::Ball]),
-        Ground,
-        LinearVelocity::default(),
-    ));
-}
+        let mut entity_commands = commands.spawn((
+            GlobalTransform::default(), 
+            Transform::default(), 
+            RigidBody::Kinematic,
+            LinearVelocity::default(),
+
+        ));
+
+        entity_commands.with_children(|p| {
+            p.spawn((
+                Mesh3d(top_mesh.clone()),
+                MeshMaterial3d(mat.clone()),
+                Collider::cuboid(1.0, 1.0, 1.0),
+                Transform::from_translation(pos - Vec3::new(0.0, 0.25, 0.0)).with_scale(Vec3::new(scale.x + 0.5, 0.5, scale.z + 0.5)),
+                Ground,
+                CollisionLayers::new(GamePhysicsLayer::Ground, [GamePhysicsLayer::Ball]),
+
+            ));
+            p.spawn((
+                Mesh3d(base_mesh.clone()),
+                MeshMaterial3d(mat.clone()),
+                Collider::cuboid(1.0, 1.0, 1.0),
+                Transform::from_translation(pos - Vec3::new(0.0, (scale.y / 2.0) + 0.5, 0.0)).with_scale(Vec3::new(scale.x, scale.y, scale.z)),
+                Ground,
+                CollisionLayers::new(GamePhysicsLayer::Ground, [GamePhysicsLayer::Ball]),
+            ));
+        });
+    
+        return entity_commands;
+    }
 
 pub fn build_tree_m<'c>(
     commands: &'c mut Commands, 
