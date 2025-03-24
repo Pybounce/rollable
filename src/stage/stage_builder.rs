@@ -191,3 +191,24 @@ pub fn build_tree_m_patch(
         build_tree_m(commands, server, shared_assets, pos + Vec3::new(6.0, -2.0, 0.0));
         build_tree_m(commands, server, shared_assets, pos + Vec3::new(-6.0, 0.0, 0.0));
 }
+
+pub fn build_goal<'c>(
+    commands: &'c mut Commands, 
+    server: & Res<AssetServer>, 
+    shared_assets: & SharedAssets, 
+    pos: Vec3) -> EntityCommands<'c> {
+
+    let mesh: Handle<Mesh> = server.load("goal.glb#Mesh0/Primitive0");
+    let mat = shared_assets.base_material.clone();
+
+    return commands.spawn((
+        Mesh3d(mesh),
+        MeshMaterial3d(mat.clone()),
+        //Collider::cylinder(1.5, 20.0),
+        RigidBody::Kinematic,
+        Transform::from_translation(pos),
+        CollisionLayers::new(GamePhysicsLayer::Ground, [GamePhysicsLayer::Ball]),
+        Ground,
+        LinearVelocity::default(),
+    ));
+}

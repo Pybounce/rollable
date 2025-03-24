@@ -31,11 +31,15 @@ pub fn spawn_temp_stage(
         MeshMaterial3d(mats.add(water_mat)),
         Transform::from_translation(Vec3::new(0.0, -10.0, 0.0)),
     ));//.try_insert(water_offset_mover);
+    
 
     //main floor
     build_floor(&mut commands, &server, &shared_assets, Vec3::ZERO, Vec3::new(40.0, 20.0, 40.0));
     build_floor(&mut commands, &server, &shared_assets, Vec3::new(-15.0, 5.0, 15.0), Vec3::new(20.0, 30.0, 20.0));
     build_floor(&mut commands, &server, &shared_assets, Vec3::new(5.0, -5.0, -5.0), Vec3::new(40.0, 30.0, 40.0));
+    
+    //bridge
+    build_floor(&mut commands, &server, &shared_assets, Vec3::new(0.0, 0.0, -15.0), Vec3::new(100.0, 3.0, 8.0));
 
 
     build_bounce_pad(&mut commands, &server, &shared_assets, Vec3::new(0.0, 1.0, 0.0));
@@ -51,6 +55,6 @@ pub fn spawn_temp_stage(
 
     build_rock(&mut commands, &server, &shared_assets, Vec3::new(40.0, -10.0, 5.0), Vec3::ONE);
     build_rock(&mut commands, &server, &shared_assets, Vec3::new(40.0, -10.0, 9.0), Vec3::new(1.2, 1.0, 0.8));
+    build_goal(&mut commands, &server, &shared_assets, Vec3::new(77.0, 0.0, -5.0));
 
 }
-
