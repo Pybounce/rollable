@@ -27,9 +27,9 @@ pub fn spawn_temp_stage(
     let mut water_offset_mover = OffsetMover::bobbing_offset(0.5);
     water_offset_mover.with_speed(0.2);
     commands.spawn((
-        Mesh3d(meshes.add(Plane3d::default().mesh().size(2000.0, 2000.0).subdivisions(10))),
+        Mesh3d(meshes.add(Plane3d::default().mesh().size(10000.0, 10000.0))),
         MeshMaterial3d(mats.add(water_mat)),
-        Transform::from_translation(Vec3::new(0.0, -10.0, 0.0)),
+        Transform::from_translation(Vec3::new(0.0, -2.0, 0.0)),
     ));//.try_insert(water_offset_mover);
     
 
@@ -38,9 +38,6 @@ pub fn spawn_temp_stage(
     build_floor(&mut commands, &server, &shared_assets, Vec3::new(-15.0, 5.0, 15.0), Vec3::new(20.0, 30.0, 20.0));
     build_floor(&mut commands, &server, &shared_assets, Vec3::new(5.0, -5.0, -5.0), Vec3::new(40.0, 30.0, 40.0));
     
-    //bridge
-    build_floor(&mut commands, &server, &shared_assets, Vec3::new(0.0, 0.0, -15.0), Vec3::new(100.0, 3.0, 8.0));
-
 
     build_bounce_pad(&mut commands, &server, &shared_assets, Vec3::new(0.0, 1.0, 0.0));
     build_pillar_m(&mut commands, &server, &shared_assets, Vec3::new(33.0, 0.0, 0.0)).try_insert(OffsetMover::bobbing_offset(10.0));
