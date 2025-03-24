@@ -115,10 +115,10 @@ fn toon_colour(uv: vec2f) -> vec4f {
 }
 
 fn get_sampling_scale(pos: vec2f) -> f32 {
-    let depth = 1.0 - prepass_depth(pos);
+    let d = 1.0 - (prepass_depth(pos) * 700.0);
     //if depth > 0.999 { return 1.0; }
     //if depth > 0.998 { return 2.0; }
-    return mix(settings.sampling_scale, settings.sampling_scale, depth);
+    return mix(settings.sampling_scale, settings.sampling_scale, saturate(d));
     //return 0.1;
 }
 
@@ -172,6 +172,8 @@ fn fragment(in: FullscreenVertexOutput) -> @location(0) vec4<f32> {
     if edge_depth > 0.5 {
         c = vec4(0.1, 0.1, 0.1, 1.0);
     }
+    let d = 1.0 - (prepass_depth(in.position.xy) * 300.0);
+    //c= vec4(d, d, d, 1.0);
    // c = vec4f(normal_threshold0 * normal_threshold0, normal_threshold0 * normal_threshold0, normal_threshold0 * normal_threshold0, 1.0);
     return vec4f(c);
 }

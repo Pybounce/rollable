@@ -1,5 +1,5 @@
 
-use bevy::{core_pipeline::{experimental::taa::TemporalAntiAliasing, fxaa::Fxaa, prepass::{DepthPrepass, NormalPrepass}}, input::mouse::{MouseMotion, MouseWheel}, prelude::*};
+use bevy::{core_pipeline::{experimental::taa::TemporalAntiAliasing, fxaa::{Fxaa, Sensitivity}, prepass::{DepthPrepass, NormalPrepass}}, input::mouse::{MouseMotion, MouseWheel}, prelude::*};
 use post_processing::ToonPostProcessSettings;
 
 use crate::player::components::Player;
@@ -34,18 +34,12 @@ pub fn spawn_camera(
 ) {
     commands.spawn((
         Camera3d::default(),
-        PerspectiveProjection {
-            //near: 2.0,
-            //far: 10000.0,
-            ..default()
-        },
         Transform::from_translation(Vec3::new(0.0, 10.0, 10.0)),
         CameraController::default(),
         ToonPostProcessSettings::default(),
         DepthPrepass,
         NormalPrepass,
         Msaa::Off,
-        //TemporalAntiAliasing::default()
     ));
 }
 
