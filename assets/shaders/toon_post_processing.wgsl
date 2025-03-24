@@ -10,10 +10,17 @@
 
 @group(0) @binding(0) var screen_texture: texture_2d<f32>;
 @group(0) @binding(1) var texture_sampler: sampler;
-struct PostProcessSettings {
-    intensity: f32,
+struct ToonPostProcessSettings {
+    depth_threshold: f32,
+    depth_threshold_depth_mul: f32,  // If something is further away, it should require more depth
+    depth_normal_threshold: f32, // If at a glazing angle, depth threshold should be harsher
+    depth_normal_threshold_mul: f32, // If at a glazing angle, depth threshold should be harsher
+    normal_threshold: f32,
+    colour_threshold: f32,
+    sampling_scale: f32,
+
 }
-@group(0) @binding(2) var<uniform> settings: PostProcessSettings;
+@group(0) @binding(2) var<uniform> settings: ToonPostProcessSettings;
 @group(0) @binding(3) var depth_prepass_texture: texture_depth_2d;
 @group(0) @binding(4) var normal_prepass_texture: texture_2d<f32>;
 @group(0) @binding(5) var<uniform> view: View;
@@ -37,7 +44,7 @@ fn uv_to_pos(uv: vec2f) -> vec2f {
 
 fn depth_buffer_edge_depth(normal_threshold: f32, bl_uv: vec2f, tr_uv: vec2f, br_uv: vec2f, tl_uv: vec2f) -> f32 {
     
-    let _edge_depth_threshold = 6.0;
+    let _edge_depth_threshold = settings.depth_threshold;
     
     let depth0 = prepass_depth(uv_to_pos(bl_uv));
     let depth1 = prepass_depth(uv_to_pos(tr_uv));
@@ -47,7 +54,7 @@ fn depth_buffer_edge_depth(normal_threshold: f32, bl_uv: vec2f, tr_uv: vec2f, br
     let depth_finite_diff_0 = depth1 - depth0;
     let depth_finite_diff_1 = depth3 - depth2;
 
-    let depth_threshold = _edge_depth_threshold * (depth0 * 0.2) * (normal_threshold * 10.0);
+    let depth_threshold = _edge_depth_threshold * (depth0 * settings.depth_threshold_depth_mul) * normal_threshold;
 
     var edge_depth = sqrt(pow(depth_finite_diff_0, 2.0) + pow(depth_finite_diff_1, 2.0)) * 100.0;
 
@@ -58,7 +65,7 @@ fn depth_buffer_edge_depth(normal_threshold: f32, bl_uv: vec2f, tr_uv: vec2f, br
 }
 
 fn normal_buffer_edge_depth(bl_uv: vec2f, tr_uv: vec2f, br_uv: vec2f, tl_uv: vec2f) -> f32 {
-    let _normal_threshold = 0.4;
+    let _normal_threshold = settings.normal_threshold;
 
     let normal0 = prepass_normal(uv_to_pos(bl_uv)).rgb;
     let normal1 = prepass_normal(uv_to_pos(tr_uv)).rgb;
@@ -76,7 +83,7 @@ fn normal_buffer_edge_depth(bl_uv: vec2f, tr_uv: vec2f, br_uv: vec2f, tl_uv: vec
 }
 
 fn detect_edge_colour(bl_uv: vec2f, tr_uv: vec2f, br_uv: vec2f, tl_uv: vec2f) -> f32 {
-    let _colour_threshold = 0.2;
+    let _colour_threshold = settings.colour_threshold;
 
     let c0 = textureSample(screen_texture, texture_sampler, bl_uv).rgb;
     let c1 = textureSample(screen_texture, texture_sampler, tr_uv).rgb;
@@ -111,7 +118,7 @@ fn get_sampling_scale(pos: vec2f) -> f32 {
     let depth = 1.0 - prepass_depth(pos);
     //if depth > 0.999 { return 1.0; }
     //if depth > 0.998 { return 2.0; }
-    return mix(3.0, 3.0, depth);
+    return mix(settings.sampling_scale, settings.sampling_scale, depth);
     //return 0.1;
 }
 
@@ -136,8 +143,8 @@ fn fragment(in: FullscreenVertexOutput) -> @location(0) vec4<f32> {
     let view_normal = normal0 * 2 - 1;
     let NdotV = 1 - dot(view_normal, -view_space_dir);
 
-    let _depth_normal_threshold = 0.5;
-    let _depth_normal_threshold_scale = 7.0;
+    let _depth_normal_threshold = settings.depth_normal_threshold;
+    let _depth_normal_threshold_scale = settings.depth_normal_threshold_mul;
     
     let normal_threshold0 = saturate((NdotV - _depth_normal_threshold) / (1.0 - _depth_normal_threshold));
     let normal_threshold = normal_threshold0 * _depth_normal_threshold_scale + 1;

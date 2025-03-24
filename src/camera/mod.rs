@@ -1,6 +1,6 @@
 
 use bevy::{core_pipeline::{experimental::taa::TemporalAntiAliasing, fxaa::Fxaa, prepass::{DepthPrepass, NormalPrepass}}, input::mouse::{MouseMotion, MouseWheel}, prelude::*};
-use post_processing::PostProcessSettings;
+use post_processing::ToonPostProcessSettings;
 
 use crate::player::components::Player;
 
@@ -41,10 +41,7 @@ pub fn spawn_camera(
         },
         Transform::from_translation(Vec3::new(0.0, 10.0, 10.0)),
         CameraController::default(),
-        PostProcessSettings {
-            intensity: 0.02,
-            ..default()
-        },
+        ToonPostProcessSettings::default(),
         DepthPrepass,
         NormalPrepass,
         Msaa::Off,
