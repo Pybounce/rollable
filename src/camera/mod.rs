@@ -79,10 +79,16 @@ pub fn zoom_camera(
 }
 
 pub fn update_toon_shader_settings(
-   // mut settings: ResMut<ToonPostProcessSettings>,
-    camera_query: Query<&Transform, With<Camera3d>>
+    mut camera_query: Query<&mut ToonPostProcessSettings, With<Camera3d>>,
+    input: Res<ButtonInput<KeyCode>>,
+    time: Res<Time>
 ) {
-    if let Ok(cam_transform) = camera_query.get_single() {
-        let view_dir = cam_transform.forward().as_vec3();
+    if let Ok(mut toon_settings) = camera_query.get_single_mut() {
+        if input.pressed(KeyCode::ArrowUp) {
+            toon_settings.sampling_scale += time.delta_secs();
+        }
+        if input.pressed(KeyCode::ArrowDown) {
+            toon_settings.sampling_scale -= time.delta_secs();
+        }
     }
 }
