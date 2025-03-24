@@ -317,7 +317,7 @@ impl Default for ToonPostProcessSettings {
             depth_threshold: 1.0, 
             depth_threshold_depth_mul: 1.0, 
             depth_normal_threshold: 0.5, 
-            depth_normal_threshold_mul: 40.0, 
+            depth_normal_threshold_mul: 30.0, 
             normal_threshold: 0.4, 
             colour_threshold: 0.2, 
             sampling_scale: 3.0 
