@@ -172,8 +172,6 @@ fn fragment(in: FullscreenVertexOutput) -> @location(0) vec4<f32> {
     if edge_depth > 0.5 {
         c = vec4(0.1, 0.1, 0.1, 1.0);
     }
-    let d = 1.0 - (prepass_depth(in.position.xy) * 300.0);
-    //c= vec4(d, d, d, 1.0);
-   // c = vec4f(normal_threshold0 * normal_threshold0, normal_threshold0 * normal_threshold0, normal_threshold0 * normal_threshold0, 1.0);
+
     return vec4f(c);
 }
