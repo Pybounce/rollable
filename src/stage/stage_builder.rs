@@ -1,5 +1,5 @@
 
-use avian3d::prelude::{Collider, CollisionLayers, Friction, GravityScale, LinearVelocity, RigidBody};
+use avian3d::{math::{FRAC_PI_2, PI}, prelude::{AngularVelocity, Collider, CollisionLayers, Friction, GravityScale, LinearVelocity, RigidBody}};
 use bevy::prelude::*;
 
 use crate::{loading::components::SharedAssets, physics::GamePhysicsLayer, shared::{bouncy::components::Bouncy, mover::components::OffsetMover}};
@@ -105,14 +105,24 @@ pub fn build_rock<'c>(
     ));
 }
 
+pub enum Floor {
+    Rectangle,
+    Octagon
+}
+
 pub fn build_floor<'c>(
     commands: &'c mut Commands, 
     server: & Res<AssetServer>, 
     shared_assets: & SharedAssets, 
     pos: Vec3,
-    scale: Vec3) -> EntityCommands<'c> {
-    let base_mesh: Handle<Mesh> = server.load("floor_rect_base.glb#Mesh0/Primitive0");
-    let top_mesh: Handle<Mesh> = server.load("floor_rect_top.glb#Mesh0/Primitive0");
+    scale: Vec3,
+    floor_type: Floor) -> EntityCommands<'c> {
+
+    let (base_mesh, top_mesh) = match floor_type {
+        Floor::Rectangle => (server.load("floor_rect_base.glb#Mesh0/Primitive0"), server.load("floor_rect_top.glb#Mesh0/Primitive0")),
+        Floor::Octagon => (server.load("floor_oct_base.glb#Mesh0/Primitive0"), server.load("floor_oct_top.glb#Mesh0/Primitive0")),
+    };
+
     let mat = shared_assets.base_material.clone();
     let mut entity_commands = commands.spawn((
         GlobalTransform::default(), 
@@ -211,4 +221,39 @@ pub fn build_goal<'c>(
         Ground,
         LinearVelocity::default(),
     ));
+}
+pub fn build_obstacle_sweeper<'c>(
+    commands: &'c mut Commands, 
+    server: & Res<AssetServer>, 
+    shared_assets: & SharedAssets, 
+    pos: Vec3,
+    speed: f32) -> EntityCommands<'c> {
+
+    let post: Handle<Mesh> = server.load("post.glb#Mesh0/Primitive0");
+    let sweeper: Handle<Mesh> = server.load("sweeper.glb#Mesh0/Primitive0");
+    let mat = shared_assets.base_material.clone();
+
+    let mut entity_commands = commands.spawn((GlobalTransform::default(), Transform::default()));
+
+    entity_commands.with_children(|p| {
+        p.spawn((
+            Mesh3d(post.clone()),
+            MeshMaterial3d(mat.clone()),
+            Collider::cylinder(1.0, 2.0),
+            RigidBody::Kinematic,
+            Transform::from_translation(pos),
+            CollisionLayers::new(GamePhysicsLayer::Ground, [GamePhysicsLayer::Ball]),
+        ));
+        p.spawn((
+            Mesh3d(sweeper.clone()),
+            MeshMaterial3d(mat.clone()),
+            Collider::cylinder(0.5, 20.0),
+            RigidBody::Kinematic,
+            Transform::from_translation(pos + Vec3::new(0.0, 1.0, 0.0)).with_rotation(Quat::from_rotation_z(FRAC_PI_2)),
+            CollisionLayers::new(GamePhysicsLayer::Ground, [GamePhysicsLayer::Ball]),
+            AngularVelocity(Vec3::new(0.0, speed, 0.0))
+        ));
+    });
+
+    return entity_commands;
 }

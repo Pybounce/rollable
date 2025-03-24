@@ -19,7 +19,7 @@ pub fn spawn_temp_stage(
 ) {
 
     let water_mat = StandardMaterial {
-        perceptual_roughness: 1.0,
+        perceptual_roughness: 0.6,
         base_color: Color::linear_rgb(35.0/255.0, 137.0/255.0, 218.0/255.0),
         ..default()
     };
@@ -34,17 +34,17 @@ pub fn spawn_temp_stage(
     
 
     //main floor
-    build_floor(&mut commands, &server, &shared_assets, Vec3::ZERO, Vec3::new(40.0, 20.0, 40.0));
-    build_floor(&mut commands, &server, &shared_assets, Vec3::new(-15.0, 5.0, 15.0), Vec3::new(20.0, 30.0, 20.0));
-    build_floor(&mut commands, &server, &shared_assets, Vec3::new(5.0, -5.0, -5.0), Vec3::new(40.0, 30.0, 40.0));
+    build_floor(&mut commands, &server, &shared_assets, Vec3::ZERO, Vec3::new(40.0, 20.0, 40.0), Floor::Rectangle);
+    build_floor(&mut commands, &server, &shared_assets, Vec3::new(-15.0, 5.0, 15.0), Vec3::new(20.0, 30.0, 20.0), Floor::Rectangle);
+    build_floor(&mut commands, &server, &shared_assets, Vec3::new(5.0, -5.0, -5.0), Vec3::new(40.0, 30.0, 40.0), Floor::Rectangle);
     
 
     build_bounce_pad(&mut commands, &server, &shared_assets, Vec3::new(0.0, 1.0, 0.0));
     build_pillar_m(&mut commands, &server, &shared_assets, Vec3::new(33.0, 0.0, 0.0)).try_insert(OffsetMover::bobbing_offset(10.0));
     build_pillar_m(&mut commands, &server, &shared_assets, Vec3::new(47.0, 10.0, 10.0)).try_insert(OffsetMover::bobbing_offset(-10.0));
-    build_floor(&mut commands, &server, &shared_assets, Vec3::new(77.0, 0.0, 0.0), Vec3::new(40.0, 20.0, 40.0));
-    build_floor(&mut commands, &server, &shared_assets, Vec3::new(23.0, 0.0, -10.0), Vec3::new(3.0, 0.5, 3.0)).try_insert(OffsetMover::from_offsets(vec![Vec3::new(15.0, 0.0, 0.0), Vec3::new(-15.0, 0.0, 0.0)]));
-    build_floor(&mut commands, &server, &shared_assets, Vec3::new(53.0, 0.0, -6.0), Vec3::new(3.0, 0.5, 3.0)).try_insert(OffsetMover::from_offsets(vec![Vec3::new(-15.0, 0.0, 0.0), Vec3::new(15.0, 0.0, 0.0)]));
+    build_floor(&mut commands, &server, &shared_assets, Vec3::new(77.0, 0.0, 0.0), Vec3::new(40.0, 20.0, 40.0), Floor::Octagon);
+    build_floor(&mut commands, &server, &shared_assets, Vec3::new(23.0, 0.0, -10.0), Vec3::new(3.0, 0.5, 3.0), Floor::Octagon).try_insert(OffsetMover::from_offsets(vec![Vec3::new(15.0, 0.0, 0.0), Vec3::new(-15.0, 0.0, 0.0)]));
+    build_floor(&mut commands, &server, &shared_assets, Vec3::new(53.0, 0.0, -6.0), Vec3::new(3.0, 0.5, 3.0), Floor::Octagon).try_insert(OffsetMover::from_offsets(vec![Vec3::new(-15.0, 0.0, 0.0), Vec3::new(15.0, 0.0, 0.0)]));
     build_tree_m(&mut commands, &server, &shared_assets, Vec3::ZERO);
     build_tree_m_patch(&mut commands, &server, &shared_assets, Vec3::new(77.0, 0.0, 0.0));
     build_rock(&mut commands, &server, &shared_assets, Vec3::new(5.0, 0.0, 5.0), Vec3::ONE);
@@ -53,5 +53,7 @@ pub fn spawn_temp_stage(
     build_rock(&mut commands, &server, &shared_assets, Vec3::new(40.0, -10.0, 5.0), Vec3::ONE);
     build_rock(&mut commands, &server, &shared_assets, Vec3::new(40.0, -10.0, 9.0), Vec3::new(1.2, 1.0, 0.8));
     build_goal(&mut commands, &server, &shared_assets, Vec3::new(77.0, 0.0, -5.0));
+    
+    build_obstacle_sweeper(&mut commands, &server, &shared_assets, Vec3::new(77.0, 0.0, 0.0), 1.0);
 
 }
