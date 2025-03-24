@@ -6,7 +6,7 @@
     forward_io::VertexOutput,
 }
 #import bevy_render::view::View
-
+#import bevy_pbr::view_transformations::uv_to_ndc;
 
 @group(0) @binding(0) var screen_texture: texture_2d<f32>;
 @group(0) @binding(1) var texture_sampler: sampler;
@@ -122,10 +122,19 @@ fn get_sampling_scale(pos: vec2f) -> f32 {
     //return 0.1;
 }
 
+fn position_ndc_to_world(ndc_pos: vec2<f32>, depth: f32) -> vec3<f32> {
+    let world_pos = view.world_from_clip * vec4(ndc_pos, depth, 1.0);
+    return world_pos.xyz / world_pos.w;
+}
+
+fn worldspace_camera_view_direction(uv: vec2f) -> vec3f {
+    let ndc = uv_to_ndc(uv);
+    let ray_point = position_ndc_to_world(ndc, prepass_depth(uv_to_pos(uv)));
+    let worldspace_view_dir = normalize(ray_point - view.world_position).xyz;
+}
+
 @fragment
 fn fragment(in: FullscreenVertexOutput) -> @location(0) vec4<f32> {
-
-    let view_space_dir = (view.view_from_clip * vec4f(in.position.xy, 0.0, 1.0)).xyz;
 
     let _scale = get_sampling_scale(in.position.xy);
     let texel_size = texel_size();
@@ -139,9 +148,11 @@ fn fragment(in: FullscreenVertexOutput) -> @location(0) vec4<f32> {
     let tl_uv = in.uv + vec2f(-texel_size.x * half_scale_floor, texel_size.y * half_scale_ceil);
 
     //who the fuck knows
+
+    let cam_view_dir = worldspace_camera_view_direction(in.uv);
     let normal0 = prepass_normal(uv_to_pos(in.uv)).rgb;
     let view_normal = normal0 * 2 - 1;
-    let NdotV = 1 - dot(view_normal, -view_space_dir);
+    let NdotV = 1 - dot(view_normal, -cam_view_dir);
 
     let _depth_normal_threshold = settings.depth_normal_threshold;
     let _depth_normal_threshold_scale = settings.depth_normal_threshold_mul;
@@ -162,6 +173,6 @@ fn fragment(in: FullscreenVertexOutput) -> @location(0) vec4<f32> {
     if edge_depth > 0.5 {
         c = vec4(0.1, 0.1, 0.1, 1.0);
     }
-
+    
     return vec4f(c);
 }

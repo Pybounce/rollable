@@ -314,10 +314,10 @@ pub struct ToonPostProcessSettings {
 impl Default for ToonPostProcessSettings {
     fn default() -> Self {
         Self { 
-            depth_threshold: 6.0, 
+            depth_threshold: 1.0, 
             depth_threshold_depth_mul: 0.2, 
             depth_normal_threshold: 0.5, 
-            depth_normal_threshold_mul: 70.0, 
+            depth_normal_threshold_mul: 7.0, 
             normal_threshold: 0.4, 
             colour_threshold: 0.2, 
             sampling_scale: 3.0 
