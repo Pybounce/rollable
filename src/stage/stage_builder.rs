@@ -227,6 +227,7 @@ pub fn build_obstacle_sweeper<'c>(
     server: & Res<AssetServer>, 
     shared_assets: & SharedAssets, 
     pos: Vec3,
+    rotation: Quat,
     speed: f32,
     arm_length: f32,
     arm_count: u8) -> EntityCommands<'c> {
@@ -238,7 +239,7 @@ pub fn build_obstacle_sweeper<'c>(
 
     let mut entity_commands = commands.spawn((
         GlobalTransform::default(), 
-        Transform::from_translation(pos),
+        Transform::from_translation(pos).with_rotation(rotation),
         RigidBody::Kinematic,
         AngularVelocity(Vec3::new(0.0, speed, 0.0)),
         NoAutoCenterOfMass
