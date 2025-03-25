@@ -11,3 +11,17 @@
 - [ ] Sweepers
   - Make the sweeper object just a 1x1 cylinder so it can be scaled to any size
   - Give option to add many sweepers, each placed equal intervals apart
+
+### Audio
+
+- [ ] Bonk sound
+  - When the ball collides with something, I can play a bonk sound
+  - Volume can depend on velocity before and after collision (velocity change)
+
+### Level Select
+
+- [ ] Isometric 3D
+  - Controller a ball that can't jump
+  - Rolls around and can enter levels
+  - Level buttons are surrounded by the things in them, such as sweepers
+  - Similar to a game about cooking or plumbing
