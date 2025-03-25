@@ -1,6 +1,6 @@
 
-use avian3d::{math::{FRAC_PI_2, PI}, prelude::{AngularVelocity, Collider, CollisionLayers, Friction, GravityScale, LinearVelocity, RigidBody}};
-use bevy::prelude::*;
+use avian3d::{math::{FRAC_PI_2, PI}, prelude::{AngularVelocity, CenterOfMass, Collider, CollisionLayers, FixedJoint, Friction, GravityScale, LinearVelocity, NoAutoCenterOfMass, RigidBody}};
+use bevy::{math::VectorSpace, prelude::*};
 
 use crate::{loading::components::SharedAssets, physics::GamePhysicsLayer, shared::{bouncy::components::Bouncy, mover::components::OffsetMover}};
 
@@ -227,33 +227,61 @@ pub fn build_obstacle_sweeper<'c>(
     server: & Res<AssetServer>, 
     shared_assets: & SharedAssets, 
     pos: Vec3,
-    speed: f32) -> EntityCommands<'c> {
+    speed: f32,
+    arm_length: f32,
+    arm_count: u8) -> EntityCommands<'c> {
 
     let post: Handle<Mesh> = server.load("post.glb#Mesh0/Primitive0");
-    let sweeper: Handle<Mesh> = server.load("sweeper.glb#Mesh0/Primitive0");
+    let sweeper_join: Handle<Mesh> = server.load("sweeper_join.glb#Mesh0/Primitive0");
+    let sweeper_arm: Handle<Mesh> = server.load("sweeper_arm.glb#Mesh0/Primitive0");
     let mat = shared_assets.base_material.clone();
 
-    let mut entity_commands = commands.spawn((GlobalTransform::default(), Transform::default()));
+    let mut entity_commands = commands.spawn((
+        GlobalTransform::default(), 
+        Transform::from_translation(pos),
+        RigidBody::Kinematic,
+        AngularVelocity(Vec3::new(0.0, speed, 0.0)),
+        NoAutoCenterOfMass
+    ));
 
     entity_commands.with_children(|p| {
         p.spawn((
             Mesh3d(post.clone()),
             MeshMaterial3d(mat.clone()),
-            Collider::cylinder(1.0, 2.0),
-            RigidBody::Kinematic,
-            Transform::from_translation(pos),
+            Transform::from_translation(Vec3::ZERO),
+        )).with_child((
+            Transform::from_translation(Vec3::new(0.0, 1.25, 0.0)),
+            Collider::cylinder(0.75, 2.0),
             CollisionLayers::new(GamePhysicsLayer::Ground, [GamePhysicsLayer::Ball]),
         ));
-        p.spawn((
-            Mesh3d(sweeper.clone()),
-            MeshMaterial3d(mat.clone()),
-            Collider::cylinder(0.5, 20.0),
-            RigidBody::Kinematic,
-            Transform::from_translation(pos + Vec3::new(0.0, 1.0, 0.0)).with_rotation(Quat::from_rotation_z(FRAC_PI_2)),
-            CollisionLayers::new(GamePhysicsLayer::Ground, [GamePhysicsLayer::Ball]),
-            AngularVelocity(Vec3::new(0.0, speed, 0.0))
-        ));
+
+        let angle_offset = (2.0 * PI) / arm_count as f32;
+
+        for i in 0..arm_count {
+            let angle = i as f32 * angle_offset;
+            p.spawn((
+                Transform::from_rotation(Quat::from_rotation_z(FRAC_PI_2) * Quat::from_rotation_x(angle)),
+            )).with_children(|r| {
+                r.spawn((
+                    Mesh3d(sweeper_join.clone()),
+                    MeshMaterial3d(mat.clone()),
+                    Collider::cylinder(0.25, 1.0),
+                    Transform::from_translation(Vec3::new(1.0, 1.0, 0.0)),
+                    CollisionLayers::new(GamePhysicsLayer::Ground, [GamePhysicsLayer::Ball]),
+                ));
+                r.spawn((
+                    Mesh3d(sweeper_arm.clone()),
+                    MeshMaterial3d(mat.clone()),
+                    Collider::cylinder(0.5, 1.0),
+                    Transform::from_translation(Vec3 { x: 1.0, y: 1.5 + (arm_length / 2.0), z: 0.0 }).with_scale(Vec3::new(1.0, arm_length, 1.0)),
+                    CollisionLayers::new(GamePhysicsLayer::Ground, [GamePhysicsLayer::Ball]),
+                ));
+            });
+        }
+
+
     });
+
 
     return entity_commands;
 }
