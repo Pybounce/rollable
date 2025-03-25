@@ -23,7 +23,7 @@ fn main() {
         //.add_plugins(PhysicsDebugPlugin::default())
         .add_plugins(PhysicsPlugins::default())
         .insert_resource(ClearColor(Color::srgb(0.7, 0.85, 0.95)))
-        .add_systems(Update, (try_exit_game, toggle_cursor_lock))
+        .add_systems(Update, (kill_ball, try_exit_game, toggle_cursor_lock))
         .add_systems(Startup, (load_stage_assets, (spawn_camera, spawn_player, spawn_temp_stage, lighting)).chain())
         .add_systems(Update, (update_toon_shader_settings, move_camera, zoom_camera, move_balls, apply_ball_friction, start_jumping_balls, jumping_balls, end_jumping_balls, check_grounded))
         .add_systems(Update, (bounce, move_offset_movers))

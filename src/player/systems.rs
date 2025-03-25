@@ -133,3 +133,12 @@ pub fn end_jumping_balls(
     }
 }
 
+pub fn kill_ball(
+    mut query: Query<&mut Transform, With<Player>>,
+) {
+    for mut t in &mut query {
+        if t.translation.y < -5.0 {
+            t.translation = Vec3::new(0.0, 5.0, 0.0);
+        }
+    }
+}
