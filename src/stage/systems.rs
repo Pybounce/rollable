@@ -51,12 +51,12 @@ pub fn spawn_temp_stage(
 
 
     build_rock(&mut commands, &server, &shared_assets, Vec3::new(40.0, -10.0, 5.0), Vec3::ONE);
-    build_rock(&mut commands, &server, &shared_assets, Vec3::new(40.0, -10.0, 9.0), Vec3::new(1.2, 1.0, 0.8));
+    build_rock(&mut commands, &server, &shared_assets, Vec3::new(10.0, 0.0, 0.0), Vec3::new(1.0, 1.0, 1.2));
     build_goal(&mut commands, &server, &shared_assets, Vec3::new(77.0, 0.0, -5.0));
     
-    build_obstacle_sweeper(&mut commands, &server, &shared_assets, Vec3::new(-50.0, 0.0, 0.0), 1.5, 10.0, 2);
-    build_obstacle_sweeper(&mut commands, &server, &shared_assets, Vec3::new(-75.0, 4.0, 10.0), 1.5, 10.0, 4);
-    build_obstacle_sweeper(&mut commands, &server, &shared_assets, Vec3::new(-100.0, 0.0, 0.0), 1.5, 10.0, 2);
+    build_obstacle_sweeper(&mut commands, &server, &shared_assets, Vec3::new(-50.0, 0.0, 0.0), 4.5, 10.0, 2);
+    build_obstacle_sweeper(&mut commands, &server, &shared_assets, Vec3::new(-75.0, 4.0, 10.0), 4.5, 10.0, 4);
+    build_obstacle_sweeper(&mut commands, &server, &shared_assets, Vec3::new(-100.0, 0.0, 0.0), 4.5, 10.0, 2);
     build_floor(&mut commands, &server, &shared_assets, Vec3::new(-50.0, 0.0, 0.0), Vec3::new(20.0, 20.0, 20.0), Floor::Octagon);
     build_floor(&mut commands, &server, &shared_assets, Vec3::new(-75.0, 4.0, 10.0), Vec3::new(20.0, 20.0, 20.0), Floor::Octagon);
     build_floor(&mut commands, &server, &shared_assets, Vec3::new(-100.0, 0.0, 0.0), Vec3::new(20.0, 20.0, 20.0), Floor::Octagon);
