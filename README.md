@@ -25,3 +25,8 @@
   - Rolls around and can enter levels
   - Level buttons are surrounded by the things in them, such as sweepers
   - Similar to a game about cooking or plumbing
+
+### Fun details
+
+- [ ] Air loons
+  - Pop if something hits them

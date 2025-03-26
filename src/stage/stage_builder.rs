@@ -286,3 +286,50 @@ pub fn build_obstacle_sweeper<'c>(
 
     return entity_commands;
 }
+
+pub fn build_air_loon<'c>(
+    commands: &'c mut Commands, 
+    server: & Res<AssetServer>, 
+    shared_assets: & SharedAssets, 
+    pos: Vec3,
+    scale: Vec3) -> EntityCommands<'c> {
+
+    let mesh: Handle<Mesh> = server.load("hot_air_loon.glb#Mesh0/Primitive0");
+    let mat = shared_assets.base_material.clone();
+
+    return commands.spawn((
+        Mesh3d(mesh),
+        MeshMaterial3d(mat.clone()),
+        Transform::from_translation(pos).with_scale(scale),
+    ));
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -61,4 +61,8 @@ pub fn spawn_temp_stage(
     build_floor(&mut commands, &server, &shared_assets, Vec3::new(-75.0, 4.0, 10.0), Vec3::new(20.0, 20.0, 20.0), Floor::Octagon);
     build_floor(&mut commands, &server, &shared_assets, Vec3::new(-100.0, 0.0, 0.0), Vec3::new(20.0, 20.0, 20.0), Floor::Octagon);
 
+
+
+    build_air_loon(&mut commands, &server, &shared_assets, Vec3::new(200.0, 60.0, 400.0), Vec3::new(10.0, 10.0, 10.0));
+
 }
