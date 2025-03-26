@@ -1,5 +1,5 @@
 
-use avian3d::{math::{FRAC_PI_2, PI}, prelude::{AngularVelocity, CenterOfMass, Collider, CollisionLayers, FixedJoint, Friction, GravityScale, LinearVelocity, NoAutoCenterOfMass, RigidBody}};
+use avian3d::{math::{FRAC_PI_2, PI}, prelude::{AngularVelocity, CenterOfMass, Collider, ColliderConstructor, CollisionLayers, FixedJoint, Friction, GravityScale, LinearVelocity, NoAutoCenterOfMass, RigidBody}};
 use bevy::{math::VectorSpace, prelude::*};
 
 use crate::{loading::components::SharedAssets, physics::GamePhysicsLayer, shared::{bouncy::components::Bouncy, mover::components::OffsetMover}};
@@ -134,7 +134,8 @@ pub fn build_floor<'c>(
         p.spawn((
             Mesh3d(top_mesh.clone()),
             MeshMaterial3d(mat.clone()),
-            Collider::cuboid(1.0, 1.0, 1.0),
+            //Collider::cuboid(1.0, 1.0, 1.0),
+            ColliderConstructor::TrimeshFromMesh,
             Transform::from_translation(pos - Vec3::new(0.0, 0.25, 0.0)).with_scale(Vec3::new(scale.x + 0.5, 0.5, scale.z + 0.5)),
             Ground,
             CollisionLayers::new(GamePhysicsLayer::Ground, [GamePhysicsLayer::Ball]),
@@ -142,7 +143,8 @@ pub fn build_floor<'c>(
         p.spawn((
             Mesh3d(base_mesh.clone()),
             MeshMaterial3d(mat.clone()),
-            Collider::cuboid(1.0, 1.0, 1.0),
+            //Collider::cuboid(1.0, 1.0, 1.0),
+            ColliderConstructor::TrimeshFromMesh,
             Transform::from_translation(pos - Vec3::new(0.0, (scale.y / 2.0) + 0.5, 0.0)).with_scale(scale),
             Ground,
             CollisionLayers::new(GamePhysicsLayer::Ground, [GamePhysicsLayer::Ball]),
