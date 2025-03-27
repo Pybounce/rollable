@@ -1,7 +1,7 @@
 
 
-use avian3d::prelude::{Collider, CollidingEntities, CollisionLayers, GravityScale, LinearVelocity, RigidBody};
-use bevy::prelude::*;
+use avian3d::prelude::{Collider, CollidingEntities, CollisionLayers, Friction, GravityScale, LinearVelocity, RigidBody, SpeculativeMargin};
+use bevy::{math::VectorSpace, prelude::*};
 
 use crate::{physics::GamePhysicsLayer, shared::bouncy::components::Bounceable, stage::components::Ground};
 
@@ -28,39 +28,42 @@ pub fn spawn_player(
         JumpController::default(),
         CollisionLayers::new(GamePhysicsLayer::Ball, [GamePhysicsLayer::Ground]),
         CollidingEntities::default(),
-        Bounceable
+        Bounceable,
+        SpeculativeMargin(2.0)
     ));
     
 }
 
 pub fn move_balls(
-    mut player_query: Query<(&mut LinearVelocity, &PlayerController, &Transform), With<Player>>,
+    mut player_query: Query<(&mut LinearVelocity, &PlayerController, &Transform, Option<&Grounded>), With<Player>>,
     camera_query: Query<&Transform, (With<Camera3d>, Without<Player>)>,
     input: Res<ButtonInput<KeyCode>>,
     time: Res<Time>
 ) {
     let camera_transform = camera_query.single();
     
-    for (mut linvel, player_controller, player_transform) in &mut player_query {
+    for (mut linvel, player_controller, player_transform, is_grounded) in &mut player_query {
         let dir = (player_transform.translation - camera_transform.translation).xz().extend(0.0).xzy().normalize_or_zero();
         let perpen_dir = Vec3::new(dir.z, 0.0, -dir.x);
+        let mut vel_dir =  Vec3::ZERO;
 
          if input.pressed(player_controller.forwards_key) {
-            linvel.0 += dir * player_controller.force * time.delta_secs();
+            vel_dir += dir;
         }
 
         if input.pressed(player_controller.backwards_key) {
-            linvel.0 -= dir * player_controller.force * time.delta_secs();
+            vel_dir -= dir;
         }
         
         if input.pressed(player_controller.right_key) {
-            linvel.0 -= perpen_dir * player_controller.force * time.delta_secs();
+            vel_dir -= perpen_dir;
         }
 
         if input.pressed(player_controller.left_key) {
-            linvel.0 += perpen_dir * player_controller.force * time.delta_secs();
-            
-        }   
+            vel_dir += perpen_dir;
+        }
+
+        linvel.0 += vel_dir.normalize_or_zero() * player_controller.force * time.delta_secs();
     }
 }
 
@@ -69,9 +72,10 @@ pub fn apply_ball_friction(
     time: Res<Time>
 ) {
     for (mut linvel, player_controller) in &mut player_query {
-        let force = linvel.0 * linvel.0 * player_controller.friction_c;
+        let mut force_mag = (linvel.0 * linvel.0 * player_controller.friction_c).length();
+        force_mag = force_mag.max(player_controller.min_friction_force).min(linvel.0.length());
         let dir = linvel.0.normalize_or_zero();
-        linvel.0 -= dir * force * time.delta_secs();
+        linvel.0 -= force_mag * dir * time.delta_secs();
     }
 }
 
@@ -130,3 +134,12 @@ pub fn end_jumping_balls(
     }
 }
 
+pub fn kill_ball(
+    mut query: Query<&mut Transform, With<Player>>,
+) {
+    for mut t in &mut query {
+        if t.translation.y < -5.0 {
+            t.translation = Vec3::new(0.0, 5.0, 0.0);
+        }
+    }
+}

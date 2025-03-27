@@ -11,7 +11,8 @@ pub struct PlayerController {
     pub forwards_key: KeyCode,
     pub backwards_key: KeyCode,
     pub force: f32,
-    pub friction_c: f32
+    pub friction_c: f32,
+    pub min_friction_force: f32
 }
 
 impl Default for PlayerController {
@@ -21,8 +22,9 @@ impl Default for PlayerController {
             right_key: KeyCode::KeyD,
             forwards_key: KeyCode::KeyW,
             backwards_key: KeyCode::KeyS,
-            force: 15.0,
-            friction_c: 0.1,
+            force: 20.0,
+            friction_c: 0.05,
+            min_friction_force: 7.0
         }
     }
 }
