@@ -52,6 +52,11 @@
   - Rolls around and can enter levels
   - Level buttons are surrounded by the things in them, such as sweepers
   - Similar to a game about cooking or plumbing
+- [ ] All in-world
+  - The level select is itself, a level. It has other level-teleports inside of it
+  - Player just goes to that level and can enter the level
+  - Can have each World be an island the player selects, then each world has an island for the Level Select
+    - Then things like the rocket easter egg can unlock microworlds, which are worlds with just a small amount of very hard levels
 
 ### Fun details
 
