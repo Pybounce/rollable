@@ -1,9 +1,36 @@
 # rollable
 
+### To Do Next
+
+- [ ] Figure out what the goal for the player is
+  - Golf flagpole
+  - Some chequered finish line
+
+### Demo To Do
+
+- [ ] Audio
+  - Player bumping
+  - Player rolling
+  - Playing death
+  - Soundtrack
+- [ ] Level select
+  - Add a nice way to select levels
+- [ ] Collectibles
+  - Each level has x collectibles on it
+- [ ] Full gameloop
+  - Level select -> Level -> Completed level -> Next level
+- [ ] Particles
+  - Player roll
+  - Player hit
+  - Player death
+- [ ] Water shader
+
 ### Bugs
 
 - [ ] Can jump infinitely against walls because grounded checks touching ground and not raycast
 - [ ] Can jump on bouncepads to go way higher
+- [ ] Outline gets too thick at distance
+  - Can overlay many outlines from 1, but mix albedo at distance
 
 ### Enhancements
 
@@ -30,3 +57,16 @@
 
 - [ ] Air loons
   - Pop if something hits them
+- [ ] Rocket
+  - Hidden buttons in the map, hitting them all launches a rocket
+
+### Stretch Ideas
+
+- [ ] Golf gamemode
+  - Can jump when touching ground once per turn
+  - Can only hit the ball (take a turn) once it's stopped moving
+- [ ] Only up levels
+- [ ] Easter eggs such as rocket
+- [ ] Save system
+  - Stretch because this is just for a demo
+- [ ] Chicken
