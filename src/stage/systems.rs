@@ -63,6 +63,6 @@ pub fn spawn_temp_stage(
 
 
 
-    build_air_loon(&mut commands, &server, &shared_assets, Vec3::new(200.0, 60.0, 400.0), Vec3::new(10.0, 10.0, 10.0));
+    build_air_loon(&mut commands, &server, &shared_assets, Vec3::new(200.0, 60.0, 400.0), Vec3::new(5.0, 5.0, 5.0));
 
 }

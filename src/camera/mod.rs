@@ -40,6 +40,11 @@ pub fn spawn_camera(
         DepthPrepass,
         NormalPrepass,
         Msaa::Off,
+        Fxaa {
+            enabled: true,
+            edge_threshold: Sensitivity::Ultra,
+            edge_threshold_min: Sensitivity::Ultra,
+        }
     ));
 }
 
