@@ -31,6 +31,9 @@
 - [ ] Can jump on bouncepads to go way higher
 - [ ] Outline gets too thick at distance
   - Can overlay many outlines from 1, but mix albedo at distance
+- [ ] Can glitch into the ground
+  - Grass and dirt being separate sucks because grass is so thin
+  - The sweeper collider is a cylinder and thus pushes you down slightly if you hit it's lower half
 
 ### Enhancements
 
