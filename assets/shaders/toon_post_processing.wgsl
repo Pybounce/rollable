@@ -133,23 +133,20 @@ fn worldspace_camera_view_direction(uv: vec2f) -> vec3f {
     return normalize(ray_point - view.world_position).xyz;
 }
 
-@fragment
-fn fragment(in: FullscreenVertexOutput) -> @location(0) vec4<f32> {
-
-    let _scale = get_sampling_scale(in.position.xy);
+fn outline_at_scale(scale: f32, uv: vec2f) -> f32 {
+    let _scale = scale;
     let texel_size = texel_size();
 
     let half_scale_floor = floor(_scale * 0.5);
     let half_scale_ceil = ceil(_scale * 0.5);
 
-    let bl_uv = in.uv - vec2f(texel_size.x, texel_size.y) * half_scale_floor;
-    let tr_uv = in.uv + vec2f(texel_size.x, texel_size.y) * half_scale_ceil;  
-    let br_uv = in.uv + vec2f(texel_size.x * half_scale_ceil, -texel_size.y * half_scale_floor);
-    let tl_uv = in.uv + vec2f(-texel_size.x * half_scale_floor, texel_size.y * half_scale_ceil);
+    let bl_uv = uv - vec2f(texel_size.x, texel_size.y) * half_scale_floor;
+    let tr_uv = uv + vec2f(texel_size.x, texel_size.y) * half_scale_ceil;  
+    let br_uv = uv + vec2f(texel_size.x * half_scale_ceil, -texel_size.y * half_scale_floor);
+    let tl_uv = uv + vec2f(-texel_size.x * half_scale_floor, texel_size.y * half_scale_ceil);
 
-    //who the fuck knows
-    let cam_view_dir = worldspace_camera_view_direction(in.uv);
-    let normal0 = prepass_normal(uv_to_pos(in.uv)).rgb;
+    let cam_view_dir = worldspace_camera_view_direction(uv);
+    let normal0 = prepass_normal(uv_to_pos(uv)).rgb;
     let view_normal = normal0 * 2 - 1;
     let NdotV = (1 - dot(view_normal, -cam_view_dir));
 
@@ -159,19 +156,53 @@ fn fragment(in: FullscreenVertexOutput) -> @location(0) vec4<f32> {
     let normal_threshold0 = saturate((NdotV - _depth_normal_threshold) / (1.0 - _depth_normal_threshold));
     let normal_threshold = normal_threshold0 * _depth_normal_threshold_scale + 1;
 
-    ////////
-
     let edge_depth_0 = depth_buffer_edge_depth(normal_threshold, bl_uv, tr_uv, br_uv, tl_uv);
     let edge_depth_1 = normal_buffer_edge_depth(bl_uv, tr_uv, br_uv, tl_uv);
     let colour_depth = detect_edge_colour(bl_uv, tr_uv, br_uv, tl_uv);
     let edge_depth = max(colour_depth, max(edge_depth_0, edge_depth_1));
     
-
-    var c = toon_colour(in.uv);
-
     if edge_depth > 0.5 {
-        c = vec4(0.1, 0.1, 0.1, 1.0);
+        return 1.0;
     }
+    else {
+        return 0.0;
+    }
+}
 
+@fragment
+fn fragment(in: FullscreenVertexOutput) -> @location(0) vec4<f32> {
+
+    var o1mix = 1.0;
+    var o2mix = 1.0;
+    var o3mix = 1.0;
+
+    var lod0 = 0.0016;
+    var lod1 = 0.001;
+    var lod2 = 0.0008;
+
+    var d = prepass_depth(in.position.xy);
+
+    o3mix = saturate((d - lod1) / (lod0 - lod1));
+    o2mix = saturate((d - lod2) / (lod1 - lod2));
+
+
+    var o1 = outline_at_scale(1.0, in.uv) * o1mix;
+    var o2 = outline_at_scale(2.0, in.uv) * o2mix;
+    var o3 = outline_at_scale(3.0, in.uv) * o3mix;
+    var o = max(o1, max(o2, o3));
+
+    var c = mix(toon_colour(in.uv), vec4f(0.1, 0.1, 0.1, 1.0), o);
+    //0.8752 -> 0.87515 == 1.0 -> 0.0
+    //0.00005 -> 0.0
+    //1.0 -> 0.0
+    //if d > 0.0016 {
+    //    c = vec4f(1.0, 0.0, 0.0, 1.0);
+    //}
+    //else if d > 0.001 {
+    //    c = vec4f(0.0, 1.0, 0.0, 1.0);
+    //}
+    //else if d > 0.0008 {
+    //    c = vec4f(0.0, 0.0, 1.0, 1.0);
+    //}
     return vec4f(c);
 }

@@ -59,6 +59,7 @@
   - Pop if something hits them
 - [ ] Rocket
   - Hidden buttons in the map, hitting them all launches a rocket
+  - This could be how bonus stages are found like space stage
 
 ### Stretch Ideas
 
