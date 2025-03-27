@@ -39,7 +39,7 @@ pub fn spawn_temp_stage(
     build_floor(&mut commands, &server, &shared_assets, Vec3::new(5.0, -5.0, -5.0), Vec3::new(40.0, 30.0, 40.0), Floor::Rectangle);
     
 
-    build_bounce_pad(&mut commands, &server, &shared_assets, Vec3::new(0.0, 1.0, 0.0));
+    build_bounce_pad(&mut commands, &server, &shared_assets, Vec3::new(10.0, 1.0, 0.0));
     build_pillar_m(&mut commands, &server, &shared_assets, Vec3::new(33.0, 0.0, 0.0)).try_insert(OffsetMover::bobbing_offset(10.0));
     build_pillar_m(&mut commands, &server, &shared_assets, Vec3::new(47.0, 10.0, 10.0)).try_insert(OffsetMover::bobbing_offset(-10.0));
     build_floor(&mut commands, &server, &shared_assets, Vec3::new(77.0, 0.0, 0.0), Vec3::new(40.0, 20.0, 40.0), Floor::Octagon);
