@@ -78,6 +78,7 @@ impl Plugin for PostProcessPlugin {
                 (
                     Node3d::Tonemapping,
                     PostProcessLabel,
+                    Node3d::Fxaa,
                     Node3d::EndMainPassPostProcessing,
                 ),
             );
