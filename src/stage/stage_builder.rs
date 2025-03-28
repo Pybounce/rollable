@@ -126,9 +126,10 @@ pub fn build_floor<'c>(
     let mat = shared_assets.base_material.clone();
     let mut entity_commands = commands.spawn((
         GlobalTransform::default(), 
-        Transform::default(), 
+        Transform::from_translation(pos), 
         RigidBody::Kinematic,
         LinearVelocity::default(),
+        NoAutoCenterOfMass
     ));
     entity_commands.with_children(|p| {
         p.spawn((
@@ -136,7 +137,7 @@ pub fn build_floor<'c>(
             MeshMaterial3d(mat.clone()),
             //Collider::cuboid(1.0, 1.0, 1.0),
             ColliderConstructor::TrimeshFromMesh,
-            Transform::from_translation(pos - Vec3::new(0.0, 0.25, 0.0)).with_scale(Vec3::new(scale.x + 0.5, 0.5, scale.z + 0.5)),
+            Transform::from_translation(-Vec3::new(0.0, 0.25, 0.0)).with_scale(Vec3::new(scale.x + 0.5, 0.5, scale.z + 0.5)),
             Ground,
             CollisionLayers::new(GamePhysicsLayer::Ground, [GamePhysicsLayer::Ball]),
         ));
@@ -145,7 +146,7 @@ pub fn build_floor<'c>(
             MeshMaterial3d(mat.clone()),
             //Collider::cuboid(1.0, 1.0, 1.0),
             ColliderConstructor::TrimeshFromMesh,
-            Transform::from_translation(pos - Vec3::new(0.0, (scale.y / 2.0) + 0.5, 0.0)).with_scale(scale),
+            Transform::from_translation(-Vec3::new(0.0, (scale.y / 2.0) + 0.5, 0.0)).with_scale(scale),
             Ground,
             CollisionLayers::new(GamePhysicsLayer::Ground, [GamePhysicsLayer::Ball]),
         ));

@@ -6,6 +6,7 @@ pub mod shared;
 pub mod loading;
 mod states;
 mod main_menu;
+mod world_select;
 
 use std::process::exit;
 
@@ -18,6 +19,7 @@ use player::systems::*;
 use shared::{bouncy::systems::*, mover::systems::move_offset_movers};
 use stage::systems::*;
 use states::AppState;
+use world_select::systems::*;
 
 fn main() {
 
@@ -29,14 +31,19 @@ fn main() {
         .add_plugins(PhysicsPlugins::default())
         .insert_resource(ClearColor(Color::srgb(0.7, 0.85, 0.95)))
         .add_systems(Update, (kill_ball, try_exit_game, toggle_cursor_lock))
-        //.add_systems(Startup, (load_stage_assets, (spawn_player, spawn_temp_stage)).chain())
+        //.add_systems(Startup, ((spawn_player, spawn_temp_stage)).chain())
         .add_systems(Update, (update_toon_shader_settings, move_camera, zoom_camera, move_balls, apply_ball_friction, start_jumping_balls, jumping_balls, end_jumping_balls, check_grounded))
         .add_systems(Update, (bounce, move_offset_movers))
         .insert_resource(Gravity(Vec3::NEG_Y * 10.0))
-        .add_systems(Startup, (spawn_camera, lighting))
+        .add_systems(Startup, (spawn_camera, lighting, load_stage_assets))
+        //main menu
         .add_systems(OnEnter(AppState::MainMenu), build_main_menu)
         .add_systems(OnExit(AppState::MainMenu), teardown_main_menu)
         .add_systems(Update, (continue_from_main_menu).run_if(in_state(AppState::MainMenu)))
+        //world select
+        .add_systems(OnEnter(AppState::WorldSelect), build_world_select)
+        .add_systems(OnExit(AppState::WorldSelect), teardown_world_select)
+        .add_systems(Update, (select_world).run_if(in_state(AppState::WorldSelect)))
         .run();
 }
 
