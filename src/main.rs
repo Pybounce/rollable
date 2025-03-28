@@ -10,7 +10,7 @@ mod world_select;
 
 use std::process::exit;
 
-use avian3d::{math::PI, prelude::{Gravity, PhysicsDebugPlugin}, PhysicsPlugins};
+use avian3d::{math::{FRAC_PI_2, PI}, prelude::{Gravity, PhysicsDebugPlugin}, PhysicsPlugins};
 use bevy::{prelude::*, window::{CursorGrabMode, PrimaryWindow}};
 use camera::{post_processing::PostProcessPlugin, *};
 use loading::systems::load_stage_assets;
@@ -51,13 +51,15 @@ fn main() {
 fn lighting(
     mut commands: Commands
 ) {
+    let mut t = Transform::from_rotation(Quat::from_rotation_x(-PI / 4.0)); 
+    t.rotate_y(FRAC_PI_2);
     commands.spawn((
         DirectionalLight {
             shadows_enabled: true,
             illuminance: 1000.0,
             ..default() 
         },
-        Transform::from_rotation(Quat::from_rotation_x(-PI / 4.0))
+        t
     ));
     commands.insert_resource(AmbientLight {
         color: Color::WHITE,

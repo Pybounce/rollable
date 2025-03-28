@@ -164,7 +164,7 @@ pub fn build_tree_m<'c>(
     let mesh: Handle<Mesh> = server.load("tree_01.glb#Mesh0/Primitive0");
     let mat = shared_assets.base_material.clone();
 
-    commands.spawn((
+    let mut entity_commands = commands.spawn((
         Mesh3d(mesh),
         MeshMaterial3d(mat.clone()),
         Collider::cylinder(1.5, 20.0),
@@ -174,7 +174,6 @@ pub fn build_tree_m<'c>(
         Ground,
         LinearVelocity::default(),
     ));
-    let mut entity_commands = commands.spawn((GlobalTransform::default(), Transform::default()));
 
     entity_commands.with_children(|p| {
         p.spawn((

@@ -2,9 +2,11 @@
 
 ### To Do Next
 
-- [ ] Figure out what the goal for the player is
-  - Golf flagpole
-  - Some chequered finish line
+- [ ] World Select
+  - Can have some resource holding the current selected world
+    - This way when you press space, it uses that
+  - Then something can look for changes to that world and move in the different islands and data?
+    - There should be an island per world, with some data and a name. Use the World enum
 
 ### Demo To Do
 
