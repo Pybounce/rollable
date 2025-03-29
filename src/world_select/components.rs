@@ -16,18 +16,12 @@ pub enum WorldType {
 #[derive(Resource)]
 pub struct WorldSelectController {
     pub current_world: WorldType,
-    world_entities: HashMap<WorldType, Entity>,
     pub max_camera_speed: f32,
-    pub min_camera_speed: f32
+    pub min_camera_speed: f32,
+    pub select_world_key: KeyCode
 }
 
 impl WorldSelectController {
-    pub fn add_world(&mut self, id: WorldType, entity: Entity) {
-        self.world_entities.insert(id, entity);
-    }
-    pub fn current_world_entity(&self) -> Entity {
-        return self.world_entities[&self.current_world];
-    }
     pub fn cycle_next_world(&mut self) {
         self.current_world = match self.current_world {
             WorldType::Grasslands => WorldType::SomethingElse,
@@ -47,9 +41,9 @@ impl Default for WorldSelectController {
     fn default() -> Self {
         Self { 
             current_world: Default::default(), 
-            world_entities: Default::default(), 
             max_camera_speed: 8.0, 
-            min_camera_speed: 0.001 
+            min_camera_speed: 0.001,
+            select_world_key: KeyCode::Space, 
         }
     }
 }

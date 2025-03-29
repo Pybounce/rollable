@@ -12,14 +12,13 @@ pub fn init_world_select(
     mut commands: Commands,
     server: Res<AssetServer>,
     shared_assets: Res<SharedAssets>,
-    mut cam_query: Query<(&mut Transform, Entity), With<Camera3d>>,
+    mut cam_query: Query<&mut Transform, With<Camera3d>>,
     mut meshes: ResMut<Assets<Mesh>>,
     mut mats: ResMut<Assets<StandardMaterial>>
 ) {
-
-    let mut controller = WorldSelectController::default();
-    controller.add_world(WorldType::Grasslands, build_world_one(&mut commands, &server, &shared_assets));
-    controller.add_world(WorldType::SomethingElse, build_world_two(&mut commands, &server, &shared_assets));
+    build_world_one(&mut commands, &server, &shared_assets);
+    build_world_two(&mut commands, &server, &shared_assets);
+    commands.insert_resource(WorldSelectController::default());
 
     let water_mat = StandardMaterial {
         perceptual_roughness: 0.6,
@@ -35,13 +34,9 @@ pub fn init_world_select(
     ));
 
 
-    if let Ok((mut cam_transform, cam_entity)) = cam_query.get_single_mut() {
+    if let Ok(mut cam_transform) = cam_query.get_single_mut() {
         cam_transform.translation = Vec3::new(0.0, 20.0, 0.0);
         cam_transform.look_at(island_pos_from_world(WorldType::Grasslands), Vec3::Y);
-        //commands.entity(cam_entity).try_insert(Watcher {
-        //    target: controller.current_world_entity(),
-        //    speed: 10.0
-        //});
     }
 
     commands.spawn((
@@ -55,7 +50,6 @@ pub fn init_world_select(
         WorldSelectEntity
     ));
 
-    commands.insert_resource(controller);
 
 }
 
