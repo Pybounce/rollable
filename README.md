@@ -39,6 +39,7 @@
 
 ### Enhancements
 
+- [ ] Add watcher to main camera to look at player
 - [ ] Rename tree_01 to tree_m_01 and then have many that are picked at random to build the stage
 - [ ] Sweepers
   - Make the sweeper object just a 1x1 cylinder so it can be scaled to any size
