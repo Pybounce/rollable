@@ -71,6 +71,9 @@
 - [ ] Rocket
   - Hidden buttons in the map, hitting them all launches a rocket
   - This could be how bonus stages are found like space stage
+- [ ] Better than collectibles
+  - Crash has collectibles but they require things like not dying for the whole level etc
+  - Point is collectibles are not the only extra thing to add to levels
 
 ### Stretch Ideas
 
