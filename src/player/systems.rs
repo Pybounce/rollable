@@ -3,36 +3,10 @@
 use avian3d::prelude::{Collider, CollidingEntities, CollisionLayers, Friction, GravityScale, LinearVelocity, RigidBody, SpeculativeMargin};
 use bevy::{math::VectorSpace, prelude::*};
 
-use crate::{physics::GamePhysicsLayer, shared::bouncy::components::Bounceable, stage::components::Ground};
+use crate::{physics::GamePhysicsLayer, shared::{bouncy::components::Bounceable, death::MarkOfDeath}, stage::components::Ground};
 
 use super::components::*;
 
-pub fn spawn_player(
-    mut commands: Commands,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<StandardMaterial>>
-) {
-    let mesh = meshes.add(Sphere::default());
-    let material = materials.add(StandardMaterial::default());
-
-    commands.spawn((
-        Mesh3d(mesh),
-        MeshMaterial3d(material),
-        Player,
-        Transform::from_translation(Vec3::new(0.0, 2.0, 0.0)),
-        Collider::sphere(0.5),
-        RigidBody::Dynamic,
-        GravityScale(6.0),
-        LinearVelocity::default(),
-        PlayerController::default(),
-        JumpController::default(),
-        CollisionLayers::new(GamePhysicsLayer::Ball, [GamePhysicsLayer::Ground]),
-        CollidingEntities::default(),
-        Bounceable,
-        SpeculativeMargin(2.0)
-    ));
-    
-}
 
 pub fn move_balls(
     mut player_query: Query<(&mut LinearVelocity, &PlayerController, &Transform), With<Player>>,
@@ -135,11 +109,12 @@ pub fn end_jumping_balls(
 }
 
 pub fn kill_ball(
-    mut query: Query<&mut Transform, With<Player>>,
+    mut commands: Commands,
+    mut query: Query<(Entity, &Transform), With<Player>>,
 ) {
-    for mut t in &mut query {
+    for (e, t) in &mut query {
         if t.translation.y < -5.0 {
-            t.translation = Vec3::new(0.0, 5.0, 0.0);
+            commands.entity(e).try_insert(MarkOfDeath);
         }
     }
 }

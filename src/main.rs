@@ -17,7 +17,7 @@ use camera::{post_processing::PostProcessPlugin, *};
 use loading::systems::load_stage_assets;
 use main_menu::systems::{build_main_menu, continue_from_main_menu, teardown_main_menu};
 use overworld::systems::*;
-use player::systems::*;
+use player::{death::kill_player, spawner::try_spawn_player, systems::*};
 use shared::{bouncy::systems::*, mover::systems::move_offset_movers};
 use stage::systems::*;
 use states::AppState;
@@ -35,7 +35,7 @@ fn main() {
         .add_systems(Update, (kill_ball, try_exit_game, toggle_cursor_lock))
         //.add_systems(Startup, ((spawn_player, spawn_temp_stage)).chain())
         .add_systems(Update, (update_toon_shader_settings, move_camera, zoom_camera, move_balls, apply_ball_friction, start_jumping_balls, jumping_balls, end_jumping_balls, check_grounded))
-        .add_systems(Update, (bounce, move_offset_movers))
+        .add_systems(Update, (kill_player, try_spawn_player, bounce, move_offset_movers))
         .insert_resource(Gravity(Vec3::NEG_Y * 10.0))
         .add_systems(Startup, (spawn_camera, lighting, load_stage_assets))
         //main menu
