@@ -12,7 +12,7 @@ pub fn build_grasslands_overworld<'c>(
 ) {
     commands.spawn((
         PlayerSpawner,
-        Transform::default()
+        Transform::from_translation(Vec3::Y * 3.0)
     ));
     let _floor = build_floor(commands, server, shared_assets, Vec3::new(5.0, -5.0, -5.0), Vec3::new(40.0, 30.0, 40.0), Floor::Rectangle).try_insert(OverworldEntity);
 
