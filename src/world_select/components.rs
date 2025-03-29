@@ -13,10 +13,12 @@ pub enum WorldType {
     SomethingElse = 2
 }
 
-#[derive(Resource, Default)]
+#[derive(Resource)]
 pub struct WorldSelectController {
     pub current_world: WorldType,
-    world_entities: HashMap<WorldType, Entity>
+    world_entities: HashMap<WorldType, Entity>,
+    pub max_camera_speed: f32,
+    pub min_camera_speed: f32
 }
 
 impl WorldSelectController {
@@ -41,3 +43,13 @@ impl WorldSelectController {
 
 }
 
+impl Default for WorldSelectController {
+    fn default() -> Self {
+        Self { 
+            current_world: Default::default(), 
+            world_entities: Default::default(), 
+            max_camera_speed: 8.0, 
+            min_camera_speed: 0.001 
+        }
+    }
+}

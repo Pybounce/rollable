@@ -100,9 +100,10 @@ pub fn move_world_select_cam(
     let angle = cam_flattened_dir.angle_between(island_flattened_dir);
     let cross = cam_flattened_dir.cross(island_flattened_dir).y;
     
-    let speed: f32 = 5.0;
-        
-    let real = (speed * time.delta_secs()).min(angle);
+    let real = (controller.min_camera_speed.max(controller.max_camera_speed * angle) * time.delta_secs()).min(angle);
     
     cam_transform.rotate_y(real * cross.signum());
 }
+
+
+
