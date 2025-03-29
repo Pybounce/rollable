@@ -29,10 +29,12 @@
 
 ### Bugs
 
+- [ ] Outline thickness issues
+  - The outline thickness is based on distance
+  - But it isn't taking the smallest distance of all the uvs (which it should)
+  - So when viewing ball with ground behind, it's thick. Whereas with sky behind, it's thinner since the samples from uvs that are in the sky count the distance as very long
 - [ ] Can jump infinitely against walls because grounded checks touching ground and not raycast
 - [ ] Can jump on bouncepads to go way higher
-- [ ] Outline gets too thick at distance
-  - Can overlay many outlines from 1, but mix albedo at distance
 - [ ] Can glitch into the ground
   - Grass and dirt being separate sucks because grass is so thin
   - The sweeper collider is a cylinder and thus pushes you down slightly if you hit it's lower half
