@@ -4,7 +4,7 @@ use std::f32::consts::FRAC_PI_4;
 use avian3d::{math::{FRAC_PI_2, PI}, prelude::{AngularVelocity, NoAutoCenterOfMass, RigidBody}};
 use bevy::{math::{primitives, VectorSpace}, prelude::*};
 
-use crate::{loading::components::SharedAssets, stage::stage_builder::{build_air_loon, build_floor, build_goal, build_tree_m, Floor}, states::AppState};
+use crate::{loading::components::SharedAssets, overworld::components::LoadOverworldConfig, stage::stage_builder::{build_air_loon, build_floor, build_goal, build_tree_m, Floor}, states::AppState};
 
 use super::{components::{WorldType, *}, functions::*};
 
@@ -76,9 +76,15 @@ pub fn cycle_selected_world(
 }
 
 pub fn select_world(
-    mut app_state: ResMut<NextState<AppState>>
+    mut app_state: ResMut<NextState<AppState>>,
+    input: Res<ButtonInput<KeyCode>>,
+    controller: Res<WorldSelectController>,
+    mut commands: Commands
 ) {
-    
+    if input.just_pressed(controller.select_world_key) {
+        commands.insert_resource(LoadOverworldConfig::new(controller.current_world));
+        app_state.set(AppState::Overworld);
+    }
 }
 
 pub fn move_world_select_cam(

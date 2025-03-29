@@ -6,6 +6,6 @@ pub enum AppState {
     #[default]
     MainMenu,
     WorldSelect,
-    StageSelect,
+    Overworld,
     InStage
 }

@@ -7,6 +7,7 @@ pub mod loading;
 mod states;
 mod main_menu;
 mod world_select;
+pub mod overworld;
 
 use std::process::exit;
 
@@ -15,6 +16,7 @@ use bevy::{prelude::*, window::{CursorGrabMode, PrimaryWindow}};
 use camera::{post_processing::PostProcessPlugin, *};
 use loading::systems::load_stage_assets;
 use main_menu::systems::{build_main_menu, continue_from_main_menu, teardown_main_menu};
+use overworld::systems::*;
 use player::systems::*;
 use shared::{bouncy::systems::*, mover::systems::move_offset_movers};
 use stage::systems::*;
@@ -44,6 +46,10 @@ fn main() {
         .add_systems(OnEnter(AppState::WorldSelect), init_world_select)
         .add_systems(OnExit(AppState::WorldSelect), teardown_world_select)
         .add_systems(Update, (move_world_select_cam, cycle_selected_world, select_world).run_if(in_state(AppState::WorldSelect)))
+        //overworld
+        .add_systems(OnEnter(AppState::Overworld), spawn_overworld_stage)
+        .add_systems(OnExit(AppState::Overworld), teardown_overworld)
+        //.add_systems(Update, ().run_if(in_state(AppState::Overworld)))
         .run();
 }
 

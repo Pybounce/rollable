@@ -35,14 +35,14 @@ pub fn spawn_player(
 }
 
 pub fn move_balls(
-    mut player_query: Query<(&mut LinearVelocity, &PlayerController, &Transform, Option<&Grounded>), With<Player>>,
+    mut player_query: Query<(&mut LinearVelocity, &PlayerController, &Transform), With<Player>>,
     camera_query: Query<&Transform, (With<Camera3d>, Without<Player>)>,
     input: Res<ButtonInput<KeyCode>>,
     time: Res<Time>
 ) {
     let camera_transform = camera_query.single();
     
-    for (mut linvel, player_controller, player_transform, is_grounded) in &mut player_query {
+    for (mut linvel, player_controller, player_transform) in &mut player_query {
         let dir = (player_transform.translation - camera_transform.translation).xz().extend(0.0).xzy().normalize_or_zero();
         let perpen_dir = Vec3::new(dir.z, 0.0, -dir.x);
         let mut vel_dir =  Vec3::ZERO;
