@@ -16,7 +16,7 @@ use camera::{post_processing::PostProcessPlugin, *};
 use loading::systems::load_stage_assets;
 use main_menu::systems::{build_main_menu, continue_from_main_menu, teardown_main_menu};
 use player::systems::*;
-use shared::{bouncy::systems::*, mover::systems::move_offset_movers, watcher::watch_target};
+use shared::{bouncy::systems::*, mover::systems::move_offset_movers};
 use stage::systems::*;
 use states::AppState;
 use world_select::systems::*;
@@ -33,7 +33,7 @@ fn main() {
         .add_systems(Update, (kill_ball, try_exit_game, toggle_cursor_lock))
         //.add_systems(Startup, ((spawn_player, spawn_temp_stage)).chain())
         .add_systems(Update, (update_toon_shader_settings, move_camera, zoom_camera, move_balls, apply_ball_friction, start_jumping_balls, jumping_balls, end_jumping_balls, check_grounded))
-        .add_systems(Update, (watch_target, bounce, move_offset_movers))
+        .add_systems(Update, (bounce, move_offset_movers))
         .insert_resource(Gravity(Vec3::NEG_Y * 10.0))
         .add_systems(Startup, (spawn_camera, lighting, load_stage_assets))
         //main menu
@@ -43,7 +43,7 @@ fn main() {
         //world select
         .add_systems(OnEnter(AppState::WorldSelect), init_world_select)
         .add_systems(OnExit(AppState::WorldSelect), teardown_world_select)
-        .add_systems(Update, (select_world).run_if(in_state(AppState::WorldSelect)))
+        .add_systems(Update, (move_world_select_cam, cycle_selected_world, select_world).run_if(in_state(AppState::WorldSelect)))
         .run();
 }
 

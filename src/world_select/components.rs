@@ -6,8 +6,8 @@ use bevy::{prelude::*, utils::hashbrown::HashMap};
 #[derive(Component)]
 pub struct WorldSelectEntity;
 
-#[derive(Default, Clone, PartialEq, Eq, Hash)]
-pub enum WorldId {
+#[derive(Default, Clone, PartialEq, Eq, Hash, Copy, Debug)]
+pub enum WorldType {
     #[default]
     Grasslands = 1,
     SomethingElse = 2
@@ -15,16 +15,29 @@ pub enum WorldId {
 
 #[derive(Resource, Default)]
 pub struct WorldSelectController {
-    pub current_world: WorldId,
-    world_entities: HashMap<WorldId, Entity>
+    pub current_world: WorldType,
+    world_entities: HashMap<WorldType, Entity>
 }
 
 impl WorldSelectController {
-    pub fn add_world(&mut self, id: WorldId, entity: Entity) {
+    pub fn add_world(&mut self, id: WorldType, entity: Entity) {
         self.world_entities.insert(id, entity);
     }
     pub fn current_world_entity(&self) -> Entity {
         return self.world_entities[&self.current_world];
     }
+    pub fn cycle_next_world(&mut self) {
+        self.current_world = match self.current_world {
+            WorldType::Grasslands => WorldType::SomethingElse,
+            WorldType::SomethingElse => WorldType::Grasslands,
+        }
+    }
+    pub fn cycle_prev_world(&mut self) {
+        self.current_world = match self.current_world {
+            WorldType::Grasslands => WorldType::SomethingElse,
+            WorldType::SomethingElse => WorldType::Grasslands,
+        }
+    }
+
 }
 
