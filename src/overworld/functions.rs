@@ -10,10 +10,8 @@ pub fn build_grasslands_overworld<'c>(
     server: & Res<AssetServer>, 
     shared_assets: & SharedAssets, 
 ) {
-    commands.spawn((
-        PlayerSpawner,
-        Transform::from_translation(Vec3::Y * 3.0)
-    ));
-    let _floor = build_floor(commands, server, shared_assets, Vec3::new(5.0, -5.0, -5.0), Vec3::new(40.0, 30.0, 40.0), Floor::Rectangle).try_insert(OverworldEntity);
+    build_player_spawner(commands, Vec3::Y * 3.0).insert(OverworldEntity);
 
+    let _floor = build_floor(commands, server, shared_assets, Vec3::new(5.0, -5.0, -5.0), Vec3::new(40.0, 30.0, 40.0), Floor::Rectangle).try_insert(OverworldEntity);
+    build_stage_teleport(commands, server, shared_assets, Vec3::new(15.0, 1.0, -5.0), 1).insert(OverworldEntity);
 }

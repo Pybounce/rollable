@@ -1,7 +1,7 @@
 
 use bevy::prelude::*;
 
-use crate::loading::components::SharedAssets;
+use crate::{loading::components::SharedAssets, player::components::Player};
 
 use super::{components::{LoadOverworldConfig, OverworldEntity}, functions::*};
 
@@ -22,9 +22,13 @@ pub fn spawn_overworld_stage(
 
 pub fn teardown_overworld(
     mut commands: Commands,
-    query: Query<Entity, With<OverworldEntity>>
+    query: Query<Entity, With<OverworldEntity>>,
+    player_query: Query<Entity, (With<Player>, Without<OverworldEntity>)>
 ) {
     for e in &query {
+        commands.entity(e).try_despawn_recursive();
+    }
+    for e in &player_query {
         commands.entity(e).try_despawn_recursive();
     }
 }

@@ -2,7 +2,7 @@
 use avian3d::{math::{FRAC_PI_2, PI}, prelude::{AngularVelocity, CenterOfMass, Collider, ColliderConstructor, CollisionLayers, FixedJoint, Friction, GravityScale, LinearVelocity, NoAutoCenterOfMass, RigidBody}};
 use bevy::{math::VectorSpace, prelude::*};
 
-use crate::{loading::components::SharedAssets, physics::GamePhysicsLayer, shared::{bouncy::components::Bouncy, mover::components::OffsetMover}};
+use crate::{loading::components::SharedAssets, overworld::stage_teleports::StageTeleport, physics::GamePhysicsLayer, player::spawner::PlayerSpawner, shared::{bouncy::components::Bouncy, mover::components::OffsetMover}};
 
 use super::components::Ground;
 
@@ -224,6 +224,7 @@ pub fn build_goal<'c>(
         LinearVelocity::default(),
     ));
 }
+
 pub fn build_obstacle_sweeper<'c>(
     commands: &'c mut Commands, 
     server: & Res<AssetServer>, 
@@ -306,10 +307,79 @@ pub fn build_air_loon<'c>(
     ));
 }
 
+pub fn build_stage_teleport<'c>(
+    commands: &'c mut Commands, 
+    server: & Res<AssetServer>, 
+    shared_assets: & SharedAssets, 
+    pos: Vec3,
+    stage_id: usize
+) -> EntityCommands<'c> {
+    let mesh: Handle<Mesh> = server.load("hot_air_loon.glb#Mesh0/Primitive0");
+    let mat = shared_assets.base_material.clone();
+
+    return commands.spawn((
+        StageTeleport { stage_id },
+        RigidBody::Kinematic,
+        Collider::sphere(0.5),
+        Mesh3d(mesh),
+        MeshMaterial3d(mat.clone()),
+        Transform::from_translation(pos).with_scale(Vec3::ONE * 0.2),
+        CollisionLayers::new(GamePhysicsLayer::Ground, [GamePhysicsLayer::Ball]),
+    ));
+}
+
+pub fn build_player_spawner<'c>(
+    commands: &'c mut Commands, 
+    pos: Vec3,
+) -> EntityCommands<'c> {
+    return commands.spawn((
+        PlayerSpawner,
+        Transform::from_translation(pos),
+    ));
+}
 
 
+pub fn build_stage_1<'c>(
+    commands: &'c mut Commands, 
+    server: & Res<AssetServer>, 
+    shared_assets: & SharedAssets, 
+) {
 
+        build_player_spawner(commands, Vec3::new(1.0, 3.0, 0.0));
 
+        //main floor
+        build_floor(commands, server, shared_assets, Vec3::ZERO, Vec3::new(40.0, 20.0, 40.0), Floor::Rectangle);
+        build_floor(commands, server, shared_assets, Vec3::new(-15.0, 5.0, 15.0), Vec3::new(20.0, 30.0, 20.0), Floor::Rectangle);
+        build_floor(commands, server, shared_assets, Vec3::new(5.0, -5.0, -5.0), Vec3::new(40.0, 30.0, 40.0), Floor::Rectangle);
+        
+    
+        build_bounce_pad(commands, server, shared_assets, Vec3::new(10.0, 1.0, 0.0));
+        build_pillar_m(commands, server, shared_assets, Vec3::new(33.0, 0.0, 0.0)).try_insert(OffsetMover::bobbing_offset(10.0));
+        build_pillar_m(commands, server, shared_assets, Vec3::new(47.0, 10.0, 10.0)).try_insert(OffsetMover::bobbing_offset(-10.0));
+        build_floor(commands, server, shared_assets, Vec3::new(77.0, 0.0, 0.0), Vec3::new(40.0, 20.0, 40.0), Floor::Octagon);
+        build_floor(commands, server, shared_assets, Vec3::new(23.0, 0.0, -10.0), Vec3::new(3.0, 0.5, 3.0), Floor::Octagon).try_insert(OffsetMover::from_offsets(vec![Vec3::new(15.0, 0.0, 0.0), Vec3::new(-15.0, 0.0, 0.0)]));
+        build_floor(commands, server, shared_assets, Vec3::new(53.0, 0.0, -6.0), Vec3::new(3.0, 0.5, 3.0), Floor::Octagon).try_insert(OffsetMover::from_offsets(vec![Vec3::new(-15.0, 0.0, 0.0), Vec3::new(15.0, 0.0, 0.0)]));
+        build_tree_m(commands, server, shared_assets, Vec3::ZERO);
+        build_tree_m_patch(commands, server, shared_assets, Vec3::new(77.0, 0.0, 0.0));
+        build_rock(commands, server, shared_assets, Vec3::new(5.0, 0.0, 5.0), Vec3::ONE);
+    
+    
+        build_rock(commands, server, shared_assets, Vec3::new(40.0, -10.0, 5.0), Vec3::ONE);
+        build_rock(commands, server, shared_assets, Vec3::new(10.0, 0.0, 0.0), Vec3::new(1.0, 1.0, 1.2));
+        build_goal(commands, server, shared_assets, Vec3::new(77.0, 0.0, -5.0));
+        
+        build_obstacle_sweeper(commands, server, shared_assets, Vec3::new(-50.0, 0.0, 0.0), Quat::default(), 4.0, 10.0, 2);
+        build_obstacle_sweeper(commands, server, shared_assets, Vec3::new(-75.0, 4.0, 10.0), Quat::default(), 4.5, 10.0, 4);
+        build_obstacle_sweeper(commands, server, shared_assets, Vec3::new(-100.0, 0.0, 0.0), Quat::default(), 4.5, 10.0, 2);
+        build_floor(commands, server, shared_assets, Vec3::new(-50.0, 0.0, 0.0), Vec3::new(20.0, 20.0, 20.0), Floor::Octagon);
+        build_floor(commands, server, shared_assets, Vec3::new(-75.0, 4.0, 10.0), Vec3::new(20.0, 20.0, 20.0), Floor::Octagon);
+        build_floor(commands, server, shared_assets, Vec3::new(-100.0, 0.0, 0.0), Vec3::new(20.0, 20.0, 20.0), Floor::Octagon);
+    
+    
+    
+        build_air_loon(commands, server, shared_assets, Vec3::new(200.0, 60.0, 400.0), Vec3::new(5.0, 5.0, 5.0));
+    
+}
 
 
 
