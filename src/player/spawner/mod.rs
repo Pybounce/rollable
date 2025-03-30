@@ -1,10 +1,11 @@
 
 use avian3d::prelude::*;
 use bevy::prelude::*;
+use bevy_hanabi::prelude::*;
 
-use crate::{physics::GamePhysicsLayer, shared::bouncy::components::Bounceable};
+use crate::{loading::components::SharedAssets, physics::GamePhysicsLayer, shared::{bouncy::components::Bounceable, follower::{Followable, Follower}}};
 
-use super::components::{JumpController, Player, PlayerController};
+use super::{components::{JumpController, Player, PlayerController}, particles::ParticleEffects};
 
 #[derive(Component)]
 #[require(Transform)]
@@ -13,6 +14,7 @@ pub struct PlayerSpawner;
 pub fn try_spawn_player(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
+    particles: Res<ParticleEffects>,
     mut materials: ResMut<Assets<StandardMaterial>>,
     player_query: Query<(), With<Player>>,
     spawner_query: Query<&Transform, (With<PlayerSpawner>, Without<Player>)>
@@ -22,7 +24,7 @@ pub fn try_spawn_player(
             let mesh = meshes.add(Sphere::default());
             let material = materials.add(StandardMaterial::default());
 
-            commands.spawn((
+            let player_entity = commands.spawn((
                 Mesh3d(mesh),
                 MeshMaterial3d(material),
                 Player,
@@ -36,8 +38,20 @@ pub fn try_spawn_player(
                 CollisionLayers::new(GamePhysicsLayer::Ball, [GamePhysicsLayer::Ground]),
                 CollidingEntities::default(),
                 Bounceable,
-                SpeculativeMargin(2.0)
+                SpeculativeMargin(2.0),
+                Followable
+            )).id();
+            commands.spawn((
+                ParticleEffectBundle {
+                    effect: ParticleEffect::new(particles.player_ground_movement.clone()),
+                    ..default()
+                },
+                Follower {
+                    target: player_entity,
+                    offset: Vec3::new(0.0, -0.5, 0.0),
+                }
             ));
+            
         }
     }
 }
