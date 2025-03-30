@@ -41,7 +41,13 @@
 
 ### Enhancements
 
-- [ ] Add watcher to main camera to look at player
+- [ ] Loading states
+  - Add separate state for Overworld
+  - OnEnter, trigger load
+  - Set OverworldState::Loading
+  - When in loading, check finished
+  - When finished, set OverworldState::Playing or something
+  - Do this for everything
 - [ ] Rename tree_01 to tree_m_01 and then have many that are picked at random to build the stage
 - [ ] Sweepers
   - Make the sweeper object just a 1x1 cylinder so it can be scaled to any size
