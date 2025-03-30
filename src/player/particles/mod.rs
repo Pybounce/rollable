@@ -1,8 +1,11 @@
 
+use avian3d::prelude::LinearVelocity;
 use bevy::{prelude::*, render::mesh::primitives};
 use bevy_hanabi::prelude::*;
 
 use crate::loading::components::SharedAssets;
+
+use super::components::{Grounded, Player};
 
 
 #[derive(Resource)]
@@ -94,4 +97,25 @@ pub fn register_player_ground_movement_particles(
     //    ..default()
     //}
     //);
+}
+
+pub fn something(
+    mut query: Query<&mut EffectInitializers>,
+    query2: Query<(Option<&Grounded>, &LinearVelocity), With<Player>>,
+) {
+    if let Ok(mut props) = query.get_single_mut() {
+        if let Ok((grounded_opt, linvel)) = query2.get_single() {
+            if linvel.length() > 3.0 && !grounded_opt.is_none(){
+
+                props.set_active(true);
+               // commands.entity(e).try_insert(Visibility::Visible);
+                //props.set();
+            }
+            else {
+                props.set_active(false);
+
+               // commands.entity(e).try_insert(Visibility::Hidden);
+            }
+        }
+    }
 }
