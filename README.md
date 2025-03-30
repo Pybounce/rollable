@@ -2,9 +2,11 @@
 
 ### To Do Next
 
-- [ ] Figure out what the goal for the player is
-  - Golf flagpole
-  - Some chequered finish line
+- [ ] World Select
+  - Can have some resource holding the current selected world
+    - This way when you press space, it uses that
+  - Then something can look for changes to that world and move in the different islands and data?
+    - There should be an island per world, with some data and a name. Use the World enum
 
 ### Demo To Do
 
@@ -27,16 +29,25 @@
 
 ### Bugs
 
+- [ ] Outline thickness issues
+  - The outline thickness is based on distance
+  - But it isn't taking the smallest distance of all the uvs (which it should)
+  - So when viewing ball with ground behind, it's thick. Whereas with sky behind, it's thinner since the samples from uvs that are in the sky count the distance as very long
 - [ ] Can jump infinitely against walls because grounded checks touching ground and not raycast
 - [ ] Can jump on bouncepads to go way higher
-- [ ] Outline gets too thick at distance
-  - Can overlay many outlines from 1, but mix albedo at distance
 - [ ] Can glitch into the ground
   - Grass and dirt being separate sucks because grass is so thin
   - The sweeper collider is a cylinder and thus pushes you down slightly if you hit it's lower half
 
 ### Enhancements
 
+- [ ] Loading states
+  - Add separate state for Overworld
+  - OnEnter, trigger load
+  - Set OverworldState::Loading
+  - When in loading, check finished
+  - When finished, set OverworldState::Playing or something
+  - Do this for everything
 - [ ] Rename tree_01 to tree_m_01 and then have many that are picked at random to build the stage
 - [ ] Sweepers
   - Make the sweeper object just a 1x1 cylinder so it can be scaled to any size
@@ -68,6 +79,9 @@
 - [ ] Rocket
   - Hidden buttons in the map, hitting them all launches a rocket
   - This could be how bonus stages are found like space stage
+- [ ] Better than collectibles
+  - Crash has collectibles but they require things like not dying for the whole level etc
+  - Point is collectibles are not the only extra thing to add to levels
 
 ### Stretch Ideas
 

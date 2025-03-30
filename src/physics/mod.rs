@@ -6,5 +6,5 @@ pub enum GamePhysicsLayer {
     #[default]
     Default, 
     Ball,  
-    Ground,   
+    Ground
 }
