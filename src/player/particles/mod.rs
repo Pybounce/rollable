@@ -91,31 +91,20 @@ pub fn register_player_ground_movement_particles(
     commands.insert_resource(ParticleEffects {
         player_ground_movement: effect_handle,
     });
-    //commands.spawn(ParticleEffectBundle {
-    //    effect: ParticleEffect::new(effect_handle),
-    //    transform: Transform::from_translation(Vec3::new(0.0, 10.0, -4.0)),
-    //    ..default()
-    //}
-    //);
+
 }
 
-pub fn something(
+pub fn animate_player_particles(
     mut query: Query<&mut EffectInitializers>,
     query2: Query<(Option<&Grounded>, &LinearVelocity), With<Player>>,
 ) {
     if let Ok(mut props) = query.get_single_mut() {
         if let Ok((grounded_opt, linvel)) = query2.get_single() {
-            if linvel.length() > 3.0 && !grounded_opt.is_none(){
-
-                props.set_active(true);
-               // commands.entity(e).try_insert(Visibility::Visible);
-                //props.set();
-            }
-            else {
-                props.set_active(false);
-
-               // commands.entity(e).try_insert(Visibility::Hidden);
-            }
+            props.set_active(linvel.length() > 3.0 && !grounded_opt.is_none());
         }
     }
 }
+
+
+
+
