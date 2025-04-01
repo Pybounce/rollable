@@ -29,6 +29,9 @@
 
 ### Bugs
 
+- [ ] Particle effects transparent?
+  - Basically you can see outlines through them
+  - Therefore the particle effects are not in the depth/normal buffers but are in the albedo buffer
 - [ ] Outline thickness issues
   - The outline thickness is based on distance
   - But it isn't taking the smallest distance of all the uvs (which it should)
