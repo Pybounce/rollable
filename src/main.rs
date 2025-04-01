@@ -18,7 +18,7 @@ use camera::{post_processing::PostProcessPlugin, *};
 use loading::systems::load_stage_assets;
 use main_menu::systems::{build_main_menu, continue_from_main_menu, teardown_main_menu};
 use overworld::{stage_teleports::teleport_player_to_stage, systems::*};
-use player::{death::kill_player, particles::{register_player_ground_movement_particles, animate_player_particles}, spawner::try_spawn_player, systems::*};
+use player::{death::kill_player, particles::systems::*, spawner::try_spawn_player, systems::*};
 use shared::{bouncy::systems::*, follower::move_followers, mover::systems::move_offset_movers};
 use stage::systems::*;
 use states::AppState;

@@ -5,7 +5,7 @@ use bevy_hanabi::prelude::*;
 
 use crate::{loading::components::SharedAssets, physics::GamePhysicsLayer, shared::{bouncy::components::Bounceable, follower::{Followable, Follower}}};
 
-use super::{components::{JumpController, Player, PlayerController}, particles::ParticleEffects};
+use super::{components::{JumpController, Player, PlayerController}, particles::components::*};
 
 #[derive(Component)]
 #[require(Transform)]
