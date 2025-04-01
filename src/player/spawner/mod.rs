@@ -14,7 +14,7 @@ pub struct PlayerSpawner;
 pub fn try_spawn_player(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
-    particles: Res<ParticleEffects>,
+    particles: Res<PlayerParticleEffects>,
     mut materials: ResMut<Assets<StandardMaterial>>,
     player_query: Query<(), With<Player>>,
     spawner_query: Query<&Transform, (With<PlayerSpawner>, Without<Player>)>
@@ -43,7 +43,7 @@ pub fn try_spawn_player(
             )).id();
             commands.spawn((
                 ParticleEffectBundle {
-                    effect: ParticleEffect::new(particles.player_ground_movement.clone()),
+                    effect: ParticleEffect::new(particles.player_running_eff_handle.clone()),
                     ..default()
                 },
                 Follower {

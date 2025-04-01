@@ -40,7 +40,7 @@ fn main() {
         .insert_resource(Gravity(Vec3::NEG_Y * 10.0))
         .add_systems(Startup, (spawn_camera, lighting, load_stage_assets).chain())
         //main menu
-        .add_systems(OnEnter(AppState::MainMenu), (build_main_menu, register_player_ground_movement_particles))
+        .add_systems(OnEnter(AppState::MainMenu), (build_main_menu, register_player_particles))
         .add_systems(OnExit(AppState::MainMenu), teardown_main_menu)
         .add_systems(Update, (continue_from_main_menu).run_if(in_state(AppState::MainMenu)))
         //world select
