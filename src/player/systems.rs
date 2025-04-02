@@ -54,17 +54,23 @@ pub fn apply_ball_friction(
 }
 
 pub fn check_grounded(
-    query: Query<(Entity, &CollidingEntities), With<Player>>,
+    query: Query<(Entity, &CollidingEntities, Option<&Grounded>), With<Player>>,
     ground_query: Query<(), With<Ground>>,
     mut commands: Commands
 ) {
-    for (player_entity, colliding_entities) in &query {
-        commands.entity(player_entity).remove::<Grounded>();
+    for (player_entity, colliding_entities, grounded_opt) in &query {
+        let mut add_grounded = false;
         for colliding_entity in colliding_entities.iter() {
             if ground_query.contains(*colliding_entity) {
-                commands.entity(player_entity).try_insert(Grounded);
+                add_grounded = true;
             }
         }
+        match (add_grounded, grounded_opt) {
+            (true, None) => { commands.entity(player_entity).try_insert(Grounded); },
+            (true, Some(_)) => (),
+            (false, None) => (),
+            (false, Some(_)) => { commands.entity(player_entity).remove::<Grounded>(); },
+        };
     }
 }
 

@@ -128,7 +128,7 @@ pub fn create_player_ground_landing_particles(meshes: &mut ResMut<Assets<Mesh>>)
       // Maximum number of particles alive at a time
       32768,
       // Spawn at a rate of 5 particles per second
-      Spawner::rate(30.0.into()),
+      Spawner::once(30.0.into(), true),
       // Move the expression module into the asset
       module
     )

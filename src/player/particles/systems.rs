@@ -1,11 +1,11 @@
 
 use avian3d::prelude::LinearVelocity;
-use bevy::{prelude::*, render::mesh::primitives};
+use bevy::prelude::*;
 use bevy_hanabi::prelude::*;
 
 use crate::player::components::{Grounded, Player};
 
-use super::{components::PlayerParticleEffects, functions::*};
+use super::{components::{PlayerGroundLandingParticleEmiter, PlayerGroundRunningParticleEmiter, PlayerParticleEffects}, functions::*};
 
 
 pub fn register_player_particles(
@@ -24,8 +24,8 @@ pub fn register_player_particles(
 }
 
 
-pub fn animate_player_particles(
-    mut query: Query<&mut EffectInitializers>,
+pub fn animate_player_ground_running_particles(
+    mut query: Query<&mut EffectInitializers, With<PlayerGroundRunningParticleEmiter>>,
     query2: Query<(Option<&Grounded>, &LinearVelocity), With<Player>>,
 ) {
     if let Ok(mut props) = query.get_single_mut() {
@@ -35,3 +35,13 @@ pub fn animate_player_particles(
     }
 }
 
+pub fn animate_player_ground_landing_particles(
+    mut query: Query<&mut EffectInitializers, With<PlayerGroundLandingParticleEmiter>>,
+    query2: Query<(), (With<Player>, Added<Grounded>)>,
+) {
+    if let Ok(mut props) = query.get_single_mut() {
+        if let Ok(_) = query2.get_single() {
+            props.reset();
+        }
+    }
+}
