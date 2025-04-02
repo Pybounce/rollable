@@ -2,12 +2,15 @@
 use bevy_hanabi::prelude::*;
 use bevy::{math::VectorSpace, prelude::*, render::mesh::primitives};
 
+
+const PARTICLE_COLOUR: Vec4 = Vec4::new(1.0, 1.0, 1.0, 1.0);
+
 pub fn create_player_ground_running_particles(meshes: &mut ResMut<Assets<Mesh>>) -> EffectAsset {
     let mesh = meshes.add(primitives::SphereMeshBuilder::default());
     // Define a color gradient from red to transparent black
     let mut gradient = Gradient::new();
-    gradient.add_key(0.0, Vec4::new(0.9, 0.9, 0.9, 1.0));
-    gradient.add_key(1.0, Vec4::new(0.9, 0.9, 0.9, 1.0));
+    gradient.add_key(0.0, PARTICLE_COLOUR);
+    gradient.add_key(1.0, PARTICLE_COLOUR);
 
     // Create a new expression module
     let mut module = Module::default();
@@ -79,8 +82,8 @@ pub fn create_player_ground_landing_particles(meshes: &mut ResMut<Assets<Mesh>>)
     let mesh = meshes.add(primitives::SphereMeshBuilder::default());
     // Define a color gradient from red to transparent black
     let mut gradient = Gradient::new();
-    gradient.add_key(0.0, Vec4::new(0.9, 0.9, 0.9, 1.0));
-    gradient.add_key(1.0, Vec4::new(0.9, 0.9, 0.9, 1.0));
+    gradient.add_key(0.0, PARTICLE_COLOUR);
+    gradient.add_key(1.0, PARTICLE_COLOUR);
 
     // Create a new expression module
     let mut module = Module::default();
@@ -91,6 +94,8 @@ pub fn create_player_ground_landing_particles(meshes: &mut ResMut<Assets<Mesh>>)
         dimension: ShapeDimension::Surface,
         axis: module.lit(Vec3::Y),
     };
+
+    
 
     let init_vel = SetVelocityCircleModifier {
         axis: module.lit(Vec3::Y),
@@ -103,7 +108,7 @@ pub fn create_player_ground_landing_particles(meshes: &mut ResMut<Assets<Mesh>>)
     // Initialize the total lifetime of the particle, that is
     // the time for which it's simulated and rendered. This modifier
     // is almost always required, otherwise the particles won't show.
-    let lifetime = module.lit(0.8); // literal value "10.0"
+    let lifetime = module.lit(0.4); // literal value "10.0"
     let init_lifetime = SetAttributeModifier::new(
         Attribute::LIFETIME, lifetime);
 
@@ -113,8 +118,8 @@ pub fn create_player_ground_landing_particles(meshes: &mut ResMut<Assets<Mesh>>)
     
     let mut size_gradient = Gradient::new();
     size_gradient.add_key(0.0, Vec3::splat(0.0));
-    size_gradient.add_key(0.1, Vec3::splat(0.7));
-    size_gradient.add_key(0.3, Vec3::splat(0.7));
+    size_gradient.add_key(0.1, Vec3::splat(1.0));
+    size_gradient.add_key(0.4, Vec3::splat(1.0));
     size_gradient.add_key(1.0, Vec3::splat(0.0));
     let size_modifer = SizeOverLifetimeModifier {
         gradient: size_gradient,
@@ -126,7 +131,7 @@ pub fn create_player_ground_landing_particles(meshes: &mut ResMut<Assets<Mesh>>)
       // Maximum number of particles alive at a time
       32768,
       // Spawn at a rate of 5 particles per second
-      SpawnerSettings::once(30.0.into()),
+      SpawnerSettings::once(20.0.into()),
       // Move the expression module into the asset
       module
     )
