@@ -25,18 +25,18 @@ pub fn register_player_particles(
 
 
 pub fn animate_player_ground_running_particles(
-    mut query: Query<&mut EffectInitializers, With<PlayerGroundRunningParticleEmiter>>,
+    mut query: Query<&mut EffectSpawner, With<PlayerGroundRunningParticleEmiter>>,
     query2: Query<(Option<&Grounded>, &LinearVelocity), With<Player>>,
 ) {
     if let Ok(mut props) = query.get_single_mut() {
         if let Ok((grounded_opt, linvel)) = query2.get_single() {
-            props.set_active(linvel.length() > 3.0 && !grounded_opt.is_none());
+            props.active = linvel.length() > 3.0 && !grounded_opt.is_none();
         }
     }
 }
 
 pub fn animate_player_ground_landing_particles(
-    mut query: Query<&mut EffectInitializers, With<PlayerGroundLandingParticleEmiter>>,
+    mut query: Query<&mut EffectSpawner, With<PlayerGroundLandingParticleEmiter>>,
     query2: Query<(), (With<Player>, Added<Grounded>)>,
 ) {
     if let Ok(mut props) = query.get_single_mut() {

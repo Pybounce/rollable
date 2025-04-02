@@ -42,10 +42,7 @@ pub fn try_spawn_player(
                 Followable
             )).id();
             commands.spawn((
-                ParticleEffectBundle {
-                    effect: ParticleEffect::new(particles.player_running_eff_handle.clone()),
-                    ..default()
-                },
+                ParticleEffect::new(particles.player_running_eff_handle.clone()),
                 Follower {
                     target: player_entity,
                     offset: Vec3::new(0.0, -0.5, 0.0),
@@ -53,10 +50,7 @@ pub fn try_spawn_player(
                 PlayerGroundRunningParticleEmiter
             ));
             commands.spawn((
-                ParticleEffectBundle {
-                    effect: ParticleEffect::new(particles.player_landing_eff_handle.clone()),
-                    ..default()
-                },
+                ParticleEffect::new(particles.player_landing_eff_handle.clone()),
                 Follower {
                     target: player_entity,
                     offset: Vec3::new(0.0, -0.5, 0.0),

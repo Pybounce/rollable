@@ -1,6 +1,6 @@
 
 use bevy_hanabi::prelude::*;
-use bevy::{prelude::*, render::mesh::primitives};
+use bevy::{math::VectorSpace, prelude::*, render::mesh::primitives};
 
 pub fn create_player_ground_running_particles(meshes: &mut ResMut<Assets<Mesh>>) -> EffectAsset {
     let mesh = meshes.add(primitives::SphereMeshBuilder::default());
@@ -55,7 +55,7 @@ pub fn create_player_ground_running_particles(meshes: &mut ResMut<Assets<Mesh>>)
       // Maximum number of particles alive at a time
       32768,
       // Spawn at a rate of 5 particles per second
-      Spawner::rate(30.0.into()),
+      SpawnerSettings::rate(30.0.into()),
       // Move the expression module into the asset
       module
     )
@@ -69,7 +69,7 @@ pub fn create_player_ground_running_particles(meshes: &mut ResMut<Assets<Mesh>>)
     // lifetime. This maps the gradient key 0 to the particle spawn
     // time, and the gradient key 1 to the particle death (10s).
     .render(size_modifer)
-    .render(ColorOverLifetimeModifier { gradient });
+    .render(ColorOverLifetimeModifier { gradient, ..default() });
 
     return effect;
 }
@@ -85,19 +85,17 @@ pub fn create_player_ground_landing_particles(meshes: &mut ResMut<Assets<Mesh>>)
     // Create a new expression module
     let mut module = Module::default();
 
-    // On spawn, randomly initialize the position of the particle
-    // to be over the surface of a sphere of radius 2 units.
-    let init_pos = SetPositionSphereModifier {
+    let init_pos = SetPositionCircleModifier {
         center: module.lit(Vec3::ZERO),
-        radius: module.lit(0.01),
-        dimension: ShapeDimension::Volume,
+        radius: module.lit(0.5),
+        dimension: ShapeDimension::Surface,
+        axis: module.lit(Vec3::Y),
     };
 
-    // Also initialize a radial initial velocity to 6 units/sec
-    // away from the (same) sphere center.
-    let init_vel = SetVelocitySphereModifier {
+    let init_vel = SetVelocityCircleModifier {
+        axis: module.lit(Vec3::Y),
         center: module.lit(Vec3::ZERO),
-        speed: module.lit(1.),
+        speed: module.lit(6.),    
     };
 
 
@@ -128,7 +126,7 @@ pub fn create_player_ground_landing_particles(meshes: &mut ResMut<Assets<Mesh>>)
       // Maximum number of particles alive at a time
       32768,
       // Spawn at a rate of 5 particles per second
-      Spawner::once(30.0.into(), true),
+      SpawnerSettings::once(30.0.into()),
       // Move the expression module into the asset
       module
     )
@@ -142,7 +140,7 @@ pub fn create_player_ground_landing_particles(meshes: &mut ResMut<Assets<Mesh>>)
     // lifetime. This maps the gradient key 0 to the particle spawn
     // time, and the gradient key 1 to the particle death (10s).
     .render(size_modifer)
-    .render(ColorOverLifetimeModifier { gradient });
+    .render(ColorOverLifetimeModifier { gradient, ..default() });
 
     return effect;
 }
