@@ -1,10 +1,8 @@
 
 use bevy::{core_pipeline::{experimental::taa::TemporalAntiAliasing, fxaa::{Fxaa, Sensitivity}, prepass::{DepthPrepass, NormalPrepass}}, input::mouse::{MouseMotion, MouseWheel}, prelude::*};
-use post_processing::ToonPostProcessSettings;
+use bevy_simpletoon::plugin::SimpletoonSettings;
 
 use crate::player::components::Player;
-
-pub mod post_processing;
 
 #[derive(Component)]
 pub struct CameraController {
@@ -36,7 +34,17 @@ pub fn spawn_camera(
         Camera3d::default(),
         Transform::from_translation(Vec3::new(0.0, 10.0, 10.0)),
         CameraController::default(),
-        ToonPostProcessSettings::default(),
+        SimpletoonSettings {
+            depth_threshold: 1.0,
+            depth_threshold_depth_mul: 1.0,
+            depth_normal_threshold: 0.5,
+            depth_normal_threshold_mul: 30.0,
+            normal_threshold: 0.4,
+            colour_threshold: 0.2,
+            stroke_size: 2.0,
+            colour_banding: 15.0,
+            stroke_colour: Vec4::new(0.1, 0.1, 0.1, 1.0),
+        },
         DepthPrepass,
         NormalPrepass,
         Msaa::Off,
@@ -84,16 +92,16 @@ pub fn zoom_camera(
 }
 
 pub fn update_toon_shader_settings(
-    mut camera_query: Query<&mut ToonPostProcessSettings, With<Camera3d>>,
+    mut camera_query: Query<&mut SimpletoonSettings, With<Camera3d>>,
     input: Res<ButtonInput<KeyCode>>,
     time: Res<Time>
 ) {
     if let Ok(mut toon_settings) = camera_query.get_single_mut() {
         if input.pressed(KeyCode::ArrowUp) {
-            toon_settings.sampling_scale += time.delta_secs();
+            toon_settings.stroke_size += time.delta_secs();
         }
         if input.pressed(KeyCode::ArrowDown) {
-            toon_settings.sampling_scale -= time.delta_secs();
+            toon_settings.stroke_size -= time.delta_secs();
         }
     }
 }

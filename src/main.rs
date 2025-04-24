@@ -14,7 +14,8 @@ use std::process::exit;
 use avian3d::{math::{FRAC_PI_2, PI}, prelude::{Gravity, PhysicsDebugPlugin}, PhysicsPlugins};
 use bevy::{prelude::*, window::{CursorGrabMode, PrimaryWindow}};
 use bevy_hanabi::HanabiPlugin;
-use camera::{post_processing::PostProcessPlugin, *};
+use bevy_simpletoon::plugin::SimpletoonPlugin;
+use camera::*;
 use loading::systems::load_stage_assets;
 use main_menu::systems::{build_main_menu, continue_from_main_menu, teardown_main_menu};
 use overworld::{stage_teleports::teleport_player_to_stage, systems::*};
@@ -30,7 +31,7 @@ fn main() {
         .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()))
         .add_plugins(HanabiPlugin)
         .init_state::<AppState>()
-        .add_plugins(PostProcessPlugin)
+        .add_plugins(SimpletoonPlugin)
         //.add_plugins(PhysicsDebugPlugin::default())
         .add_plugins(PhysicsPlugins::default())
         .insert_resource(ClearColor(Color::srgb(0.7, 0.85, 0.95)))

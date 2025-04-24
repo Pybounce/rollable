@@ -1070,6 +1070,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "bevy_simpletoon"
+version = "0.1.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5e1f5464169fed386fcab50dc273b027d50497962a3a843535e12e82bc3170a6"
+dependencies = [
+ "bevy",
+]
+
+[[package]]
 name = "bevy_sprite"
 version = "0.15.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3758,6 +3767,7 @@ dependencies = [
  "avian3d",
  "bevy",
  "bevy_hanabi",
+ "bevy_simpletoon",
 ]
 
 [[package]]
